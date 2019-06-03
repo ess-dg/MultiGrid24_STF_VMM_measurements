@@ -15,9 +15,9 @@ def filter_events(events, window):
                   'srs_timestamp': [float(window.time_min.text()),
                                     float(window.time_max.text()),
                                     window.timestamp_filter.isChecked()],
-                  'chip': [window.chip_min.value(),
-                           window.chip_max.value(),
-                           window.chip_filter.isChecked()],
+                  'chip_id': [window.chip_min.value(),
+                              window.chip_max.value(),
+                              window.chip_filter.isChecked()],
                   }
     # Only include the filters that we want to use
     events_red = events
