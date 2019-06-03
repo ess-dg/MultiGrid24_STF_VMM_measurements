@@ -71,7 +71,7 @@ def PHS_2D_plot(events, window):
     VMM_bins = [29, 29, 30, 30]
     # Prepare figure
     fig = plt.figure()
-    title = 'PHS (2D)\n(%s, ...)' % window.data_sets.rsplit('\n', 1)[0]
+    title = 'PHS (2D)\n(%s, ...)' % window.data_sets.splitlines()[0]
     fig.suptitle(title, x=0.5, y=1.03)
     vmin = 1
     vmax = events.shape[0] // 1000 + 100

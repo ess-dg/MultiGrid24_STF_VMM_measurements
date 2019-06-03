@@ -8,6 +8,7 @@ import pandas as pd
 
 from cluster import import_data, cluster_data
 from Plotting.PHS import PHS_1D_plot, PHS_2D_plot
+from Plotting.Miscellaneous import timestamp_plot
 
 # =============================================================================
 # Windows
@@ -30,7 +31,10 @@ class MainWindow(QMainWindow):
         self.show()
         self.refresh_window()
 
+    # =========================================================================
     # Actions
+    # =========================================================================
+
     def cluster_action(self):
         # Intitate progress bar
         self.cluster_progress.show()
@@ -45,6 +49,7 @@ class MainWindow(QMainWindow):
                 self.Clusters = self.Clusters.append(clusters)
                 self.cluster_progress.setValue(i/len(file_paths)*100)
                 self.refresh_window()
+        self.Clusters.reset_index(drop=True, inplace=True)
         self.cluster_progress.close()
         # Assign data set names and refresh window
         file_names = self.get_file_names(file_paths)
@@ -64,11 +69,20 @@ class MainWindow(QMainWindow):
             fig = PHS_2D_plot(self.Clusters, self)
             fig.show()
 
-    # Helper functions
+    def timestamp_action(self):
+        if self.data_sets != '':
+            fig = timestamp_plot(self.Clusters, self)
+            fig.show()
+
+    # =========================================================================
+    # Helper Functions
+    # =========================================================================
+
     def setup_buttons(self):
         self.cluster_button.clicked.connect(self.cluster_action)
         self.PHS_1D_button.clicked.connect(self.PHS_1D_action)
         self.PHS_2D_button.clicked.connect(self.PHS_2D_action)
+        self.timestamp_button.clicked.connect(self.timestamp_action)
 
     def refresh_window(self):
         self.update()
@@ -76,13 +90,16 @@ class MainWindow(QMainWindow):
         self.update()
         self.app.processEvents()
         self.update()
+        self.app.processEvents()
+        self.app.processEvents()
+        self.app.processEvents()
 
     def get_file_names(self, file_paths):
         file_names = ''
         for i, file_path in enumerate(file_paths):
             file_names += file_path.rsplit('/', 1)[-1]
-            #if i < len(file_paths) - 1:
-            file_names += '\n'
+            if i < len(file_paths) - 1:
+                file_names += '\n'
         return file_names
 
     def get_duration(self, clusters):
