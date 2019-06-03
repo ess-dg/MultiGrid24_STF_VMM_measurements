@@ -25,6 +25,7 @@ class MainWindow(QMainWindow):
         self.measurement_time = 0
         self.data_sets = ''
         self.Clusters = pd.DataFrame()
+        self.Events = pd.DataFrame()
         self.cluster_progress.close()
         self.save_progress.close()
         self.load_progress.close()
@@ -44,9 +45,10 @@ class MainWindow(QMainWindow):
         if len(file_paths) > 0:
             for i, file_path in enumerate(file_paths):
                 data = import_data(file_path)
-                clusters = cluster_data(data)
+                clusters, events = cluster_data(data)
                 self.measurement_time += self.get_duration(clusters)
                 self.Clusters = self.Clusters.append(clusters)
+                self.Events = self.Events.append(events)
                 self.cluster_progress.setValue(i/len(file_paths)*100)
                 self.refresh_window()
         self.Clusters.reset_index(drop=True, inplace=True)
@@ -61,17 +63,17 @@ class MainWindow(QMainWindow):
 
     def PHS_1D_action(self):
         if self.data_sets != '':
-            fig = PHS_1D_plot(self.Clusters, self)
+            fig = PHS_1D_plot(self.Events, self)
             fig.show()
 
     def PHS_2D_action(self):
         if self.data_sets != '':
-            fig = PHS_2D_plot(self.Clusters, self)
+            fig = PHS_2D_plot(self.Events, self)
             fig.show()
 
     def timestamp_action(self):
         if self.data_sets != '':
-            fig = timestamp_plot(self.Clusters, self)
+            fig = timestamp_plot(self.Events, self)
             fig.show()
 
     # =========================================================================

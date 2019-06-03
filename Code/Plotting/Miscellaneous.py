@@ -7,6 +7,8 @@ import pandas as pd
 import plotly.io as pio
 import os
 
+from Plotting.HelperFunctions import filter_events
+
 # =============================================================================
 # Timestamp
 # =============================================================================

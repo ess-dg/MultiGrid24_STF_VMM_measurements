@@ -4,6 +4,8 @@ import os
 import pandas as pd
 from matplotlib.colors import LogNorm
 
+from Plotting.HelperFunctions import filter_events
+
 # ============================================================================
 # PHS (1D)
 # ============================================================================
@@ -28,6 +30,8 @@ def PHS_1D_plot(events, window):
     # Declare parameters
     VMM_order = [2, 3, 4, 5]
     number_bins = int(window.phsBins.text())
+    # Initial filter
+    events = filter_events(events, window)
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (1D)\n(%s, ...)' % window.data_sets.splitlines()[0]
@@ -69,6 +73,8 @@ def PHS_2D_plot(events, window):
                   [16.5, 46.5],
                   [16.5, 46.5]]
     VMM_bins = [29, 29, 30, 30]
+    # Initial filter
+    events = filter_events(events, window)
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (2D)\n(%s, ...)' % window.data_sets.splitlines()[0]
