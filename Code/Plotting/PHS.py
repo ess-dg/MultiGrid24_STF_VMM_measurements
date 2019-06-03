@@ -30,8 +30,8 @@ def PHS_1D_plot(events, window):
     number_bins = int(window.phsBins.text())
     # Prepare figure
     fig = plt.figure()
-    title = 'PHS (1D)\n(%s, ...)' % window.data_sets.rsplit('/n', 1)[0]
-    fig.suptitle('PHS (1D) - ' + title, x=0.5, y=1.03)
+    title = 'PHS (1D)\n(%s, ...)' % window.data_sets.splitlines()[0]
+    fig.suptitle(title, x=0.5, y=1.03)
     fig.set_figheight(8)
     fig.set_figwidth(10)
     # Plot figure
@@ -49,7 +49,7 @@ def PHS_1D_plot(events, window):
 # =============================================================================
 
 
-def PHS_2D_plot(events, mode=None):
+def PHS_2D_plot(events, window):
     def PHS_2D_plot_bus(events, VMM, limit, bins, sub_title, vmin, vmax):
         if VMM == 2:
             sub_title += ' (Grids)'
@@ -71,7 +71,8 @@ def PHS_2D_plot(events, mode=None):
     VMM_bins = [29, 29, 30, 30]
     # Prepare figure
     fig = plt.figure()
-    fig.suptitle('PHS (2D)')
+    title = 'PHS (2D)\n(%s, ...)' % window.data_sets.rsplit('\n', 1)[0]
+    fig.suptitle(title, x=0.5, y=1.03)
     vmin = 1
     vmax = events.shape[0] // 1000 + 100
     fig.set_figheight(8)

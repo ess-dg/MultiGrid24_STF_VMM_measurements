@@ -50,16 +50,19 @@ class MainWindow(QMainWindow):
         file_names = self.get_file_names(file_paths)
         self.data_sets_browser.setText(file_names)
         self.update()
+        self.update()
         self.data_sets = file_names
         self.refresh_window()
 
     def PHS_1D_action(self):
-        fig = PHS_1D_plot(self.Clusters, self)
-        fig.show()
+        if self.data_sets != '':
+            fig = PHS_1D_plot(self.Clusters, self)
+            fig.show()
 
     def PHS_2D_action(self):
-        fig = PHS_2D_plot(self.Clusters)
-        fig.show()
+        if self.data_sets != '':
+            fig = PHS_2D_plot(self.Clusters, self)
+            fig.show()
 
     # Helper functions
     def setup_buttons(self):
