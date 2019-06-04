@@ -9,6 +9,7 @@ import pandas as pd
 from cluster import import_data, cluster_data
 from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
                           PHS_2D_MG_plot)
+from Plotting.Coincidences import Coincidences_2D_plot, Coincidences_3D_plot
 from Plotting.Miscellaneous import timestamp_plot
 
 # =============================================================================
@@ -87,6 +88,15 @@ class MainWindow(QMainWindow):
                 fig = PHS_2D_MG_plot(self.Events, self)
             fig.show()
 
+    def Coincidences_2D_action(self):
+        if self.data_sets != '':
+            fig = Coincidences_2D_plot(self.Clusters, self)
+            fig.show()
+
+    def Coincidences_3D_action(self):
+        if self.data_sets != '':
+            Coincidences_3D_plot(self.Clusters, self)
+
     def timestamp_action(self):
         if self.data_sets != '':
             fig = timestamp_plot(self.Events, self)
@@ -100,6 +110,8 @@ class MainWindow(QMainWindow):
         self.cluster_button.clicked.connect(self.cluster_action)
         self.PHS_1D_button.clicked.connect(self.PHS_1D_action)
         self.PHS_2D_button.clicked.connect(self.PHS_2D_action)
+        self.Coincidences_2D_button.clicked.connect(self.Coincidences_2D_action)
+        self.Coincidences_3D_button.clicked.connect(self.Coincidences_3D_action)
         self.timestamp_button.clicked.connect(self.timestamp_action)
         self.toogle_VMM_MG()
 

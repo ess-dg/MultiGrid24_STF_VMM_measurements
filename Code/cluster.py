@@ -31,6 +31,8 @@ def import_data(file_path):
 def cluster_data(df_raw, window, file_nbr, file_nbrs):
     # Inititate parameters
     time_window = float(window.time_window.text())  # [TDC Channels]
+    print('Time window')
+    print(time_window)
     # Initate data vectors
     size = df_raw.shape[0]
     data_dict = {'wCh': np.zeros([size], dtype=int),
@@ -123,7 +125,52 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     # Append vector to raw dataframe with MG channels
     df_raw = df_raw.join(pd.DataFrame(MG_channels))
     print(df_raw)
+    print(df_clustered)
     return df_clustered, df_raw
+
+# =============================================================================
+# SAVE DATA
+# =============================================================================
+
+
+def save_data(clusters, events, path, window):
+    window.save_progress.setValue(0)
+    window.save_progress.show()
+    window.update()
+    window.app.processEvents()
+    
+    coincident_events.to_hdf(path, 'coincident_events', complevel=9)
+    window.save_progress.setValue(25)
+    window.update()
+    window.app.processEvents()
+    events.to_hdf(path, 'events', complevel=9)
+    window.save_progress.setValue(50)
+    window.update()
+    window.app.processEvents()
+    triggers.to_hdf(path, 'triggers', complevel=9)
+    window.save_progress.setValue(75)
+    window.update()
+    window.app.processEvents()
+    
+    number_det = pd.DataFrame({'number_of_detectors': [number_of_detectors]})
+    mod_or     = pd.DataFrame({'module_order': module_order})
+    det_types  = pd.DataFrame({'detector_types': detector_types})
+    da_set     = pd.DataFrame({'data_set': [data_set]})
+    mt         = pd.DataFrame({'measurement_time': [measurement_time]})
+    ca         = pd.DataFrame({'calibration': [calibration]})
+    ei = pd.DataFrame({'E_i': [E_i]})
+        
+    number_det.to_hdf(path, 'number_of_detectors', complevel=9)
+    mod_or.to_hdf(path, 'module_order', complevel=9)
+    det_types.to_hdf(path, 'detector_types', complevel=9)
+    da_set.to_hdf(path, 'data_set', complevel=9)
+    mt.to_hdf(path, 'measurement_time', complevel=9)
+    ei.to_hdf(path, 'E_i', complevel=9)
+    ca.to_hdf(path, 'calibration', complevel=9)
+    window.save_progress.setValue(100)
+    window.update()
+    window.app.processEvents()
+    window.save_progress.close()
 
 
 # =============================================================================
@@ -151,7 +198,7 @@ def get_VMM_to_MG24_mapping():
     path_mapping = os.path.join(dir_name, '../Tables/MG_to_VMM_Mapping.xlsx')
     mapping_matrix = pd.read_excel(path_mapping).values
     # Store in convenient format
-    VMM_ch_to_MG24_ch = np.empty((6, 48), dtype='object')
+    VMM_ch_to_MG24_ch = np.empty((6, 80), dtype='object')
     for row in mapping_matrix:
         VMM_ch_to_MG24_ch[row[1]][row[2]] = row[5]
     return VMM_ch_to_MG24_ch

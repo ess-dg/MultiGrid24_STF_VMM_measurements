@@ -106,11 +106,11 @@ def PHS_2D_VMM_plot(events, window):
         plt.colorbar()
     # Declare parameters
     VMM_order = [2, 3, 4, 5]
-    VMM_limits = [[17.5, 46.5],
+    VMM_limits = [[15.5, 48.5],
                   [17.5, 46.5],
                   [16.5, 46.5],
                   [16.5, 46.5]]
-    VMM_bins = [29, 29, 30, 30]
+    VMM_bins = [33, 29, 30, 30]
     # Initial filter
     events = filter_events(events, window)
     # Prepare figure

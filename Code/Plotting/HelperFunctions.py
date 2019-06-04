@@ -18,6 +18,12 @@ def filter_events(events, window):
                   'chip_id': [window.chip_min.value(),
                               window.chip_max.value(),
                               window.chip_filter.isChecked()],
+                  #  'wCh': [window.wCh_min.value(),
+                  #          window.wCh_max.value(),
+                  #          window.wCh_filter.isChecked()],
+                  #  'gCh': [window.gCh_min.value(),
+                  #          window.gCh_max.value(),
+                  #          window.gCh_filter.isChecked()]
                   }
     # Only include the filters that we want to use
     events_red = events

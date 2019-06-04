@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>701</width>
-    <height>543</height>
+    <height>544</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -394,7 +394,7 @@
       </widget>
      </item>
      <item row="4" column="6">
-      <widget class="QSpinBox" name="gCh_max_2">
+      <widget class="QSpinBox" name="wCh_max">
        <property name="minimum">
         <number>0</number>
        </property>
@@ -417,7 +417,7 @@
       </widget>
      </item>
      <item row="5" column="6">
-      <widget class="QCheckBox" name="gCh_filter_2">
+      <widget class="QCheckBox" name="wCh_filter">
        <property name="text">
         <string/>
        </property>
@@ -560,7 +560,7 @@
      <string>1D</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="Coincidences_2D">
+   <widget class="QPushButton" name="Coincidences_2D_button">
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -586,7 +586,7 @@
      <string>2D</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="Coincidences_3D">
+   <widget class="QPushButton" name="Coincidences_3D_button">
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -923,7 +923,7 @@ alexander.backis@esss.se</string>
      </rect>
     </property>
     <property name="text">
-     <string>3e3</string>
+     <string>4e3</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_54">
