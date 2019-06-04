@@ -26,19 +26,3 @@ def filter_events(events, window):
             events_red = events_red[(events_red[par] >= min_val)
                                     & (events_red[par] <= max_val)]
     return events_red
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

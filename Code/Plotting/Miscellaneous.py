@@ -15,6 +15,9 @@ from Plotting.HelperFunctions import filter_events
 
 
 def timestamp_plot(events, window):
+    # Initial filter
+    events = filter_events(events, window)
+    # Plot
     fig = plt.figure()
     plt.plot(events.srs_timestamp, color='black', zorder=5)
     plt.title('Timestamp vs event number')
