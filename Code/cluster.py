@@ -184,10 +184,15 @@ def load_data(path, window):
         window.Clusters = window.Clusters.append(Clusters)
         window.Events = window.Events.append(Events)
         window.measurement_time += measurement_time
+        window.data_sets += '\n' + data_sets
+    # Reset index on clusters and events
+    window.Clusters.reset_index(drop=True, inplace=True)
+    window.Events.reset_index(drop=True, inplace=True)
+    # Update text browser and close loading bar
     window.load_progress.setValue(100)
     window.refresh_window()
     window.load_progress.close()
-    window.data_sets_browser.setText(data_sets)
+    window.data_sets_browser.setText(window.data_sets)
     window.refresh_window()
 
 

@@ -52,6 +52,9 @@ class MainWindow(QMainWindow):
                 self.measurement_time = 0
                 self.Clusters = pd.DataFrame()
                 self.Events = pd.DataFrame()
+                self.data_sets = ''
+            else:
+                self.data_sets += '\n'
             # Iterate through selected files
             for i, file_path in enumerate(file_paths):
                 data = import_data(file_path)
@@ -66,7 +69,8 @@ class MainWindow(QMainWindow):
             self.cluster_progress.close()
             # Assign data set names and refresh window
             file_names = self.get_file_names(file_paths)
-            self.data_sets_browser.setText(file_names)
+            self.data_sets += file_names
+            self.data_sets_browser.setText(self.data_sets)
             self.update()
             self.update()
             self.data_sets = file_names
