@@ -59,7 +59,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     Ch = int(first_row['channel'])
     # Start first cluster
     gw_ADC_max['wMAX'], gw_ADC_max['wMAX'] = 0, 0
-    data_dict['wCh'][index], data_dict['gCh'][index] = -10, -10
+    data_dict['wCh'][index], data_dict['gCh'][index] = -1, -1
     data_dict['Time'][index] = start_time
     # Modify first cluster
     mgCh = VMM_ch_to_MG24_ch[chip_id][Ch]
@@ -80,7 +80,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
         mgCh = VMM_ch_to_MG24_ch[chip_id][Ch]
         if mgCh is None:
             mgCh = -10
-        MG_channels['wCh'][i+1], MG_channels['gCh'][i+1] = -10, -10
+        MG_channels['wCh'][i+1], MG_channels['gCh'][i+1] = -1, -1
         if (Time - start_time) < time_window:
             # Modify cluster
             xCh, xM, xADC, xMAX = chip_id_to_wire_or_grid[chip_id]
@@ -95,7 +95,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
             start_time = Time
             # Start new cluster
             gw_ADC_max['wMAX'], gw_ADC_max['gMAX'] = 0, 0
-            data_dict['wCh'][index], data_dict['gCh'][index] = -10, -10
+            data_dict['wCh'][index], data_dict['gCh'][index] = -1, -1
             data_dict['Time'][index] = start_time
             # Modify new cluster
             xCh, xM, xADC, xMAX = chip_id_to_wire_or_grid[chip_id]
@@ -108,7 +108,8 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
         MG_channels[xCh][i+1] = mgCh
         # Print progress on screen
         if i % 2000000 == 1:
-            window.cluster_progress.setValue((file_nbr/file_nbrs)*(i/size)*100)
+            progress = (i/(size*file_nbrs))*100 + ((file_nbr-1)/file_nbrs)*100
+            window.cluster_progress.setValue(progress)
             window.refresh_window()
 
     #Remove empty elements and save in DataFrame for easier analysis
@@ -126,44 +127,68 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
 # =============================================================================
 
 
-def save_data(clusters, events, path, window):
+def save_data(path, window):
+    # Initiate loading bar
     window.save_progress.setValue(0)
     window.save_progress.show()
-    window.update()
-    window.app.processEvents()
-    
-    coincident_events.to_hdf(path, 'coincident_events', complevel=9)
-    window.save_progress.setValue(25)
-    window.update()
-    window.app.processEvents()
-    events.to_hdf(path, 'events', complevel=9)
-    window.save_progress.setValue(50)
-    window.update()
-    window.app.processEvents()
-    triggers.to_hdf(path, 'triggers', complevel=9)
-    window.save_progress.setValue(75)
-    window.update()
-    window.app.processEvents()
-    
-    number_det = pd.DataFrame({'number_of_detectors': [number_of_detectors]})
-    mod_or     = pd.DataFrame({'module_order': module_order})
-    det_types  = pd.DataFrame({'detector_types': detector_types})
-    da_set     = pd.DataFrame({'data_set': [data_set]})
-    mt         = pd.DataFrame({'measurement_time': [measurement_time]})
-    ca         = pd.DataFrame({'calibration': [calibration]})
-    ei = pd.DataFrame({'E_i': [E_i]})
-        
-    number_det.to_hdf(path, 'number_of_detectors', complevel=9)
-    mod_or.to_hdf(path, 'module_order', complevel=9)
-    det_types.to_hdf(path, 'detector_types', complevel=9)
-    da_set.to_hdf(path, 'data_set', complevel=9)
-    mt.to_hdf(path, 'measurement_time', complevel=9)
-    ei.to_hdf(path, 'E_i', complevel=9)
-    ca.to_hdf(path, 'calibration', complevel=9)
+    window.refresh_window()
+    # Save clusters
+    window.Clusters.to_hdf(path, 'Clusters', complevel=9)
+    window.save_progress.setValue(33)
+    window.refresh_window()
+    # Save events
+    window.Events.to_hdf(path, 'Events', complevel=9)
+    window.save_progress.setValue(66)
+    window.refresh_window()
+    # Save parameters
+    data_sets = pd.DataFrame({'data_sets': [window.data_sets]})
+    measurement_time = pd.DataFrame({'measurement_time': [window.measurement_time]})
+    data_sets.to_hdf(path, 'data_sets', complevel=9)
+    measurement_time.to_hdf(path, 'measurement_time', complevel=9)
     window.save_progress.setValue(100)
-    window.update()
-    window.app.processEvents()
+    window.refresh_window()
     window.save_progress.close()
+    window.refresh_window()
+
+
+# =============================================================================
+# LOAD DATA
+# =============================================================================
+
+
+def load_data(path, window):
+    # Initiate loading bar
+    window.load_progress.setValue(0)
+    window.load_progress.show()
+    window.refresh_window()
+    # Load clusters
+    Clusters = pd.read_hdf(path, 'Clusters')
+    window.load_progress.setValue(25)
+    window.refresh_window()
+    # Load events
+    Events = pd.read_hdf(path, 'Events')
+    window.load_progress.setValue(50)
+    window.refresh_window()
+    # Load parameters
+    measurement_time_df = pd.read_hdf(path, 'measurement_time')
+    measurement_time = measurement_time_df['measurement_time'].iloc[0]
+    data_sets_df = pd.read_hdf(path, 'data_sets')
+    data_sets = data_sets_df['data_sets'].iloc[0]
+    # Write or append
+    if window.write_button.isChecked():
+        window.Clusters = Clusters
+        window.Events = Events
+        window.measurement_time = measurement_time
+        window.data_sets = data_sets
+    else:
+        window.Clusters = window.Clusters.append(Clusters)
+        window.Events = window.Events.append(Events)
+        window.measurement_time += measurement_time
+    window.load_progress.setValue(100)
+    window.refresh_window()
+    window.load_progress.close()
+    window.data_sets_browser.setText(data_sets)
+    window.refresh_window()
 
 
 # =============================================================================

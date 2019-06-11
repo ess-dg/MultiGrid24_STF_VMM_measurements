@@ -6,6 +6,7 @@ import plotly.graph_objs as go
 import pandas as pd
 import plotly.io as pio
 import os
+from Plotting.HelperFunctions import filter_coincident_events
 
 
 # =============================================================================
@@ -15,7 +16,7 @@ import os
 
 def Coincidences_2D_plot(clusters, window):
     # Initial filter, keep only coincident events
-    ce = clusters[(clusters.wM > 0) & (clusters.gM > 0)]
+    ce = filter_coincident_events(clusters, window)
     # Declare parameters (added with condition if empty array)
     data_sets = window.data_sets.splitlines()[0]
     # Plot data
@@ -39,7 +40,7 @@ def Coincidences_3D_plot(df, window):
     min_count = 0
     max_count = np.inf
     # Perform initial filters
-    df = df[(df.wCh != -1) & (df.gCh != -1)]
+    df = filter_coincident_events(df, window)
     # Initiate 'voxel_id -> (x, y, z)'-mapping
     MG24_ch_to_coord = get_MG24_to_XYZ_mapping()
     # Calculate 3D histogram
@@ -62,8 +63,8 @@ def Coincidences_3D_plot(df, window):
                 hist[2].append(coord['z'])
                 hist[3].append(H[wCh, gCh])
                 loc += 1
-                labels.append('WireChannel: ' + str(wCh) + '<br>'
-                              + 'GridChannel: ' + str(gCh) + '<br>'
+                labels.append('Wire Channel: ' + str(wCh) + '<br>'
+                              + 'Grid Channel: ' + str(gCh) + '<br>'
                               + 'Counts: ' + str(H[wCh, gCh])
                               )
     # Produce 3D histogram plot
@@ -78,8 +79,6 @@ def Coincidences_3D_plot(df, window):
                                            colorbar=dict(thickness=20,
                                                          title='log10(counts)'
                                                          ),
-                                           #cmin=0,
-                                           #cmax=2.5
                                            ),
                                text=labels,
                                name='Multi-Grid',
@@ -104,17 +103,15 @@ def Coincidences_3D_plot(df, window):
     #pio.write_image(fig, '../Results/HTML_files/Ce3Dhistogram.pdf')
 
 
-
-
 # =============================================================================
 # Helper Functions
 # =============================================================================
 
 def get_MG24_to_XYZ_mapping():
-    # Declare voxelspacing
-    WireSpacing  = 10     #  [mm]
-    LayerSpacing = 23.5   #  [mm]
-    GridSpacing  = 23.5   #  [mm]
+    # Declare voxelspacing in [mm]
+    WireSpacing = 10
+    LayerSpacing = 23.5
+    GridSpacing = 23.5
     # Iterate over all channels and create mapping
     MG24_ch_to_coord = np.empty((13, 80), dtype='object')
     for gCh in np.arange(0, 13, 1):

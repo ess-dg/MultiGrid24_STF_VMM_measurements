@@ -6,7 +6,7 @@ import sys
 import os
 import pandas as pd
 
-from cluster import import_data, cluster_data
+from cluster import import_data, cluster_data, save_data, load_data
 from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
                           PHS_2D_MG_plot)
 from Plotting.Coincidences import Coincidences_2D_plot, Coincidences_3D_plot
@@ -40,15 +40,15 @@ class MainWindow(QMainWindow):
     # =========================================================================
 
     def cluster_action(self):
-        # Intitate progress bar
-        self.cluster_progress.show()
-        self.cluster_progress.setValue(0)
         # Import data
         file_paths = QFileDialog.getOpenFileNames()[0]
         size = len(file_paths)
         if size > 0:
+            # Intitate progress bar
+            self.cluster_progress.show()
+            self.cluster_progress.setValue(0)
             # Check if we want to append or write
-            if self.write.isChecked():
+            if self.write_button.isChecked():
                 self.measurement_time = 0
                 self.Clusters = pd.DataFrame()
                 self.Events = pd.DataFrame()
@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
                 self.measurement_time += self.get_duration(events)
                 self.Clusters = self.Clusters.append(clusters)
                 self.Events = self.Events.append(events)
-                self.cluster_progress.setValue(i/len(file_paths)*100)
+                self.cluster_progress.setValue(((i+1)/len(file_paths))*100)
                 self.refresh_window()
             self.Clusters.reset_index(drop=True, inplace=True)
             self.Events.reset_index(drop=True, inplace=True)
@@ -71,6 +71,16 @@ class MainWindow(QMainWindow):
             self.update()
             self.data_sets = file_names
             self.refresh_window()
+
+    def save_action(self):
+        save_path = QFileDialog.getSaveFileName()[0]
+        if save_path != '':
+            save_data(save_path, self)
+
+    def load_action(self):
+        load_path = QFileDialog.getOpenFileName()[0]
+        if load_path != '':
+            load_data(load_path, self)
 
     def PHS_1D_action(self):
         if self.data_sets != '':
@@ -107,11 +117,17 @@ class MainWindow(QMainWindow):
     # =========================================================================
 
     def setup_buttons(self):
+        # File handling
         self.cluster_button.clicked.connect(self.cluster_action)
+        self.save_button.clicked.connect(self.save_action)
+        self.load_button.clicked.connect(self.load_action)
+        # PHS
         self.PHS_1D_button.clicked.connect(self.PHS_1D_action)
         self.PHS_2D_button.clicked.connect(self.PHS_2D_action)
+        # Coincidences
         self.Coincidences_2D_button.clicked.connect(self.Coincidences_2D_action)
         self.Coincidences_3D_button.clicked.connect(self.Coincidences_3D_action)
+        # Miscellaneous
         self.timestamp_button.clicked.connect(self.timestamp_action)
         self.toogle_VMM_MG()
 
