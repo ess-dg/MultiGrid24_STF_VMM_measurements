@@ -31,8 +31,6 @@ def import_data(file_path):
 def cluster_data(df_raw, window, file_nbr, file_nbrs):
     # Inititate parameters
     time_window = float(window.time_window.text())  # [TDC Channels]
-    print('Time window')
-    print(time_window)
     # Initate data vectors
     size = df_raw.shape[0]
     data_dict = {'wCh': np.zeros([size], dtype=int),
@@ -47,7 +45,6 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
                    'gCh': np.zeros([size], dtype=int)}
     # Get mappings
     VMM_ch_to_MG24_ch = get_VMM_to_MG24_mapping()
-    print(VMM_ch_to_MG24_ch)
     chip_id_to_wire_or_grid = {2: ['gCh', 'gM', 'gADC', 'gMAX'],
                                3: ['wCh', 'wM', 'wADC', 'wMAX'],
                                4: ['wCh', 'wM', 'wADC', 'wMAX'],
@@ -62,7 +59,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     Ch = int(first_row['channel'])
     # Start first cluster
     gw_ADC_max['wMAX'], gw_ADC_max['wMAX'] = 0, 0
-    data_dict['wCh'][index], data_dict['gCh'][index] = -1, -1
+    data_dict['wCh'][index], data_dict['gCh'][index] = -10, -10
     data_dict['Time'][index] = start_time
     # Modify first cluster
     mgCh = VMM_ch_to_MG24_ch[chip_id][Ch]
@@ -87,8 +84,6 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
         if (Time - start_time) < time_window:
             # Modify cluster
             xCh, xM, xADC, xMAX = chip_id_to_wire_or_grid[chip_id]
-            if xCh == 'wCh' and chip_id == 2:
-                print('hej')
             data_dict[xADC][index] += ADC
             data_dict[xM][index] += 1
             if ADC > gw_ADC_max[xMAX]:
@@ -100,12 +95,10 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
             start_time = Time
             # Start new cluster
             gw_ADC_max['wMAX'], gw_ADC_max['gMAX'] = 0, 0
-            data_dict['wCh'][index], data_dict['gCh'][index] = -1, -1
+            data_dict['wCh'][index], data_dict['gCh'][index] = -10, -10
             data_dict['Time'][index] = start_time
             # Modify new cluster
             xCh, xM, xADC, xMAX = chip_id_to_wire_or_grid[chip_id]
-            if xCh == 'wCh' and chip_id == 2:
-                print('hej')
             data_dict[xADC][index] += ADC
             data_dict[xM][index] += 1
             if ADC > gw_ADC_max[xMAX]:

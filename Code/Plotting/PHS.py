@@ -144,6 +144,32 @@ def PHS_2D_MG_plot(events, window):
                    range=[limit, [0, 1050]], norm=LogNorm(),
                    vmin=vmin, vmax=vmax, cmap='jet')
         plt.colorbar()
+
+    def get_wire_events(events, window):
+        events_red = None
+        if window.wCh_filter.isChecked():
+            wCh_min = window.wCh_min.value()
+            wCh_max = window.wCh_max.value()
+            events_red = events[(events['wCh'] >= wCh_min)
+                                & (events['wCh'] <= wCh_max)]
+        else:
+            events_red = events[(events['wCh'] >= 0)
+                                & (events['wCh'] <= 79)]
+
+        return events_red
+
+    def get_grid_events(events, window):
+        events_red = None
+        if window.gCh_filter.isChecked():
+            gCh_min = window.gCh_min.value()
+            gCh_max = window.gCh_max.value()
+            events_red = events[(events['gCh'] >= gCh_min)
+                                & (events['gCh'] <= gCh_max)]
+        else:
+            events_red = events[(events['gCh'] >= 0)
+                                & (events['gCh'] <= 12)]
+
+        return events_red
     # Declare parameters
     typeChs = ['wCh', 'gCh']
     limits = [[-0.5, 78.5], [-0.5, 11.5]]
@@ -161,9 +187,14 @@ def PHS_2D_MG_plot(events, window):
     fig.set_figwidth(10)
     # Plot figure
     for i, (typeCh, limit, bins) in enumerate(zip(typeChs, limits, bins)):
+        # Filter events based on wires or grids
+        if typeCh == 'wCh':
+            events_red = get_wire_events(events, window)
+        else:
+            events_red = get_grid_events(events, window)
         plt.subplot(1, 2, i+1)
         sub_title = 'PHS: %s' % grids_or_wires[typeCh]
-        PHS_2D_plot_bus(events, typeCh, limit, bins, sub_title, vmin, vmax)
+        PHS_2D_plot_bus(events_red, typeCh, limit, bins, sub_title, vmin, vmax)
     plt.tight_layout()
     return fig
 
