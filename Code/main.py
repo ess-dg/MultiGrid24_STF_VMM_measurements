@@ -104,7 +104,7 @@ class MainWindow(QMainWindow):
 
     def Coincidences_2D_action(self):
         if self.data_sets != '':
-            fig = Coincidences_2D_plot(self.Clusters, self)
+            fig = Coincidences_2D_plot(self)
             fig.show()
 
     def Coincidences_3D_action(self):

@@ -94,11 +94,3 @@ def filter_coincident_events(ce, window):
         ce_red = ce_red[((ce_red['wCh'] >= 0) & (ce_red['wCh'] <= 79)) |
                         ((ce_red['gCh'] >= gCh_min) & (ce_red['gCh'] <= gCh_max))]
     return ce_red
-
-
-
-
-
-
-
-

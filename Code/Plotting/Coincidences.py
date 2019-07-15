@@ -14,16 +14,34 @@ from Plotting.HelperFunctions import filter_coincident_events
 # =============================================================================
 
 
-def Coincidences_2D_plot(clusters, window):
-    # Initial filter, keep only coincident events
-    ce = filter_coincident_events(clusters, window)
+def Coincidences_2D_plot(window):
     # Declare parameters (added with condition if empty array)
     data_sets = window.data_sets.splitlines()[0]
+    # Import data
+    df_20 = window.Clusters
+    df_16 = window.Clusters
+    # Initial filter, keep only coincident events
+    clusters_20 = filter_coincident_events(df_20, window)
+    clusters_16 = filter_coincident_events(df_16, window)
+
     # Plot data
     fig = plt.figure()
-    plt.title('Coincident events (2D)\nData set(s): %s' % data_sets)
-    plt.hist2d(ce.wCh, ce.gCh, bins=[80, 12],
+    plt.suptitle('Coincident events (2D)\nData set(s): %s' % data_sets)
+    # for 20 layers
+    plt.subplot(1, 2, 1)
+    plt.title('20 layers')
+    plt.hist2d(clusters_20.wCh, clusters_20.gCh, bins=[80, 12],
                range=[[-0.5, 79.5], [-0.5, 11.5]],
+               norm=LogNorm(), cmap='jet')
+    plt.xlabel('Wire [Channel number]')
+    plt.ylabel('Grid [Channel number]')
+    plt.colorbar()
+
+    # for 16 layers
+    plt.subplot(1, 2, 2)
+    plt.title('16 layers')
+    plt.hist2d(clusters_16.wCh, clusters_16.gCh, bins=[64, 12],
+               range=[[-0.5, 63.5], [-0.5, 11.5]],
                norm=LogNorm(), cmap='jet')
     plt.xlabel('Wire [Channel number]')
     plt.ylabel('Grid [Channel number]')
@@ -121,13 +139,3 @@ def get_MG24_to_XYZ_mapping():
             z = (wCh % 20) * WireSpacing
             MG24_ch_to_coord[gCh, wCh] = {'x': x, 'y': y, 'z': z}
     return MG24_ch_to_coord
-
-
-
-
-
-
-
-
-
-
