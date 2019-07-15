@@ -104,7 +104,7 @@ def PHS_1D_MG_plot(events, window):
 # =============================================================================
 
 
-def PHS_2D_VMM_plot(events, window):
+def PHS_2D_VMM_plot(window):
     def PHS_2D_plot_bus(events, VMM, limit, bins, sub_title, vmin, vmax):
         if VMM == 2:
             sub_title += ' (Grids)'
@@ -150,18 +150,18 @@ def PHS_2D_VMM_plot(events, window):
     fig.set_figwidth(10)
     # Plot figure
     # for 20 layers
-    for i, (VMM, limit, bins) in enumerate(zip(VMM_order, VMM_limits, VMM_bins)):
-        events_VMM = events[events.chip_id == VMM]
-        plt.subplot(2, 2, i+1)
-        sub_title = 'VMM: %s' % VMM
-        PHS_2D_plot_bus(events_VMM, VMM, limit, bins, sub_title, vmin, vmax)
+    for i, (VMM, limit, bins) in enumerate(zip(VMM_order_20, VMM_limits_20, VMM_bins_20)):
+        events_VMM_20 = clusters_20[clusters_20.chip_id == VMM]
+        plt.subplot(4, 2, i+1)
+        sub_title = 'VMM: %s -- 20 layers' % VMM
+        PHS_2D_plot_bus(events_VMM_20, VMM, limit, bins, sub_title, vmin, vmax_20)
     plt.tight_layout()
-    # for 16 laysers
-    for i, (VMM, limit, bins) in enumerate(zip(VMM_order, VMM_limits, VMM_bins)):
-        events_VMM = events[events.chip_id == VMM]
-        plt.subplot(2, 2, i+1)
-        sub_title = 'VMM: %s' % VMM
-        PHS_2D_plot_bus(events_VMM, VMM, limit, bins, sub_title, vmin, vmax)
+    # for 16 layers
+    for i, (VMM, limit, bins) in enumerate(zip(VMM_order_16, VMM_limits_16, VMM_bins_16)):
+        events_VMM_16 = clusters_16[clusters_16.chip_id == VMM]
+        plt.subplot(4, 2, i+5)
+        sub_title = 'VMM: %s -- 16 layers' % VMM
+        PHS_2D_plot_bus(events_VMM_16, VMM, limit, bins, sub_title, vmin, vmax_16)
     plt.tight_layout()
     return fig
 
