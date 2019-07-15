@@ -3,7 +3,6 @@ import numpy as np
 import os
 import pandas as pd
 from matplotlib.colors import LogNorm
-
 from Plotting.HelperFunctions import filter_events
 
 # ============================================================================
@@ -11,7 +10,7 @@ from Plotting.HelperFunctions import filter_events
 # ============================================================================
 
 
-def PHS_1D_VMM_plot(events, window):
+def PHS_1D_VMM_plot(window):
     def PHS_1D_plot_bus(events, sub_title, number_bins):
         # Plot
         if VMM == 2:
@@ -28,10 +27,15 @@ def PHS_1D_VMM_plot(events, window):
                  range=[0, 1050], histtype='step',
                  color='black', zorder=5)
     # Declare parameters
-    VMM_order = [2, 3, 4, 5]
+    VMM_order_20 = [2, 3, 4, 5]
+    VMM_order_16 = [2, 3, 4, 5]
     number_bins = int(window.phsBins.text())
+    # Import data
+    df_20 = window.Events#window.Clusters_20_layers
+    df_16 = window.Events#window.Clusters_16_layers
     # Initial filter
-    events = filter_events(events, window)
+    clusters_20 = filter_events(df_20, window)
+    clusters_16 = filter_events(df_16, window)
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (1D)\n(%s, ...)' % window.data_sets.splitlines()[0]
@@ -39,11 +43,19 @@ def PHS_1D_VMM_plot(events, window):
     fig.set_figheight(8)
     fig.set_figwidth(10)
     # Plot figure
-    for i, VMM in enumerate(VMM_order):
-        events_VMM = events[events.chip_id == VMM]
-        plt.subplot(2, 2, i+1)
-        sub_title = 'VMM: %s' % VMM
-        PHS_1D_plot_bus(events_VMM, sub_title, number_bins)
+    # for 20 layers
+    for i, VMM in enumerate(VMM_order_20):
+        events_VMM_20 = clusters_20[clusters_20.chip_id == VMM]
+        plt.subplot(4, 2, i+1)
+        sub_title = 'VMM: %s' % VMM + " -- 20 layers"
+        PHS_1D_plot_bus(events_VMM_20, sub_title, number_bins)
+    plt.tight_layout()
+    # for 16 layers
+    for i, VMM in enumerate(VMM_order_16):
+        events_VMM_16 = clusters_16[clusters_16.chip_id == VMM]
+        plt.subplot(4, 2, i+5)
+        sub_title = 'VMM: %s' % VMM + " -- 16 layers"
+        PHS_1D_plot_bus(events_VMM_16, sub_title, number_bins)
     plt.tight_layout()
     return fig
 
@@ -197,14 +209,3 @@ def PHS_2D_MG_plot(events, window):
         PHS_2D_plot_bus(events_red, typeCh, limit, bins, sub_title, vmin, vmax)
     plt.tight_layout()
     return fig
-
-
-
-
-
-
-
-
-
-
-

@@ -89,7 +89,7 @@ class MainWindow(QMainWindow):
     def PHS_1D_action(self):
         if self.data_sets != '':
             if self.VMM.isChecked():
-                fig = PHS_1D_VMM_plot(self.Events, self)
+                fig = PHS_1D_VMM_plot(self)
             else:
                 fig = PHS_1D_MG_plot(self.Events, self)
             fig.show()
