@@ -113,7 +113,7 @@ class MainWindow(QMainWindow):
 
     def timestamp_action(self):
         if self.data_sets != '':
-            fig = timestamp_plot(self.Events, self)
+            fig = timestamp_plot(self)
             fig.show()
 
     # =========================================================================
