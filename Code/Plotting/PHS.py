@@ -77,6 +77,7 @@ def PHS_1D_MG_plot(events, window):
         plt.hist(events[events[typeCh] >= 0].adc, bins=number_bins,
                  range=[0, 1050], histtype='step',
                  color='black', zorder=5)
+
     # Declare parameters
     number_bins = int(window.phsBins.text())
     typeChs = ['wCh', 'gCh']
@@ -116,24 +117,46 @@ def PHS_2D_VMM_plot(events, window):
                    range=[limit, [0, 1050]], norm=LogNorm(),
                    vmin=vmin, vmax=vmax, cmap='jet')
         plt.colorbar()
-    # Declare parameters
-    VMM_order = [2, 3, 4, 5]
-    VMM_limits = [[15.5, 48.5],
-                  [17.5, 46.5],
-                  [16.5, 46.5],
-                  [16.5, 46.5]]
-    VMM_bins = [33, 29, 30, 30]
+
+
+    number_bins = int(window.phsBins.text())
+    # Import data
+    df_20 = window.Events#window.Clusters_20_layers
+    df_16 = window.Events#window.Clusters_16_layers
     # Initial filter
-    events = filter_events(events, window)
+    clusters_20 = filter_events(df_20, window)
+    clusters_16 = filter_events(df_16, window)
+    # Declare parameters
+    VMM_order_20 = [2, 3, 4, 5]
+    VMM_order_16 = [2, 3, 4, 5]
+    VMM_limits_20 = [[15.5, 48.5],
+                    [17.5, 46.5],
+                    [16.5, 46.5],
+                    [16.5, 46.5]]
+    VMM_limits_16 = [[15.5, 48.5],
+                    [17.5, 46.5],
+                    [16.5, 46.5],
+                    [16.5, 46.5]]
+    VMM_bins_20 = [33, 29, 30, 30]
+    VMM_bins_16 = [33, 29, 30, 30]
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (2D) - VMM\n(%s, ...)' % window.data_sets.splitlines()[0]
     fig.suptitle(title, x=0.5, y=1.03)
     vmin = 1
-    vmax = events.shape[0] // 1000 + 100
+    vmax_20 = clusters_20.shape[0] // 1000 + 100
+    vmax_16 = clusters_16.shape[0] // 1000 + 100
     fig.set_figheight(8)
     fig.set_figwidth(10)
     # Plot figure
+    # for 20 layers
+    for i, (VMM, limit, bins) in enumerate(zip(VMM_order, VMM_limits, VMM_bins)):
+        events_VMM = events[events.chip_id == VMM]
+        plt.subplot(2, 2, i+1)
+        sub_title = 'VMM: %s' % VMM
+        PHS_2D_plot_bus(events_VMM, VMM, limit, bins, sub_title, vmin, vmax)
+    plt.tight_layout()
+    # for 16 laysers
     for i, (VMM, limit, bins) in enumerate(zip(VMM_order, VMM_limits, VMM_bins)):
         events_VMM = events[events.chip_id == VMM]
         plt.subplot(2, 2, i+1)
