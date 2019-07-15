@@ -31,8 +31,8 @@ def PHS_1D_VMM_plot(window):
     VMM_order_16 = [2, 3, 4, 5]
     number_bins = int(window.phsBins.text())
     # Import data
-    df_20 = window.Events#window.Clusters_20_layers
-    df_16 = window.Events#window.Clusters_16_layers
+    df_20 = window.Events
+    df_16 = window.Events
     # Initial filter
     clusters_20 = filter_events(df_20, window)
     clusters_16 = filter_events(df_16, window)
@@ -65,7 +65,7 @@ def PHS_1D_VMM_plot(window):
 # ============================================================================
 
 
-def PHS_1D_MG_plot(events, window):
+def PHS_1D_MG_plot(window):
     def PHS_1D_plot_bus(events, typeCh, sub_title, number_bins):
         # Plot
         plt.title(sub_title)
@@ -82,8 +82,14 @@ def PHS_1D_MG_plot(events, window):
     number_bins = int(window.phsBins.text())
     typeChs = ['wCh', 'gCh']
     grids_or_wires = {'wCh': 'Wires', 'gCh': 'Grids'}
+
+    # Import data
+    df_20 = window.Events
+    df_16 = window.Events
     # Initial filter
-    events = filter_events(events, window)
+    clusters_20 = filter_events(df_20, window)
+    clusters_16 = filter_events(df_16, window)
+
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (1D)\n(%s, ...)' % window.data_sets.splitlines()[0]
@@ -91,11 +97,19 @@ def PHS_1D_MG_plot(events, window):
     fig.set_figheight(4)
     fig.set_figwidth(10)
     # Plot figure
+    # for 20 layers
     for i, typeCh in enumerate(typeChs):
-        plt.subplot(1, 2, i+1)
-        sub_title = grids_or_wires[typeCh]
-        PHS_1D_plot_bus(events, typeCh, sub_title, number_bins)
+        plt.subplot(2, 2, i+1)
+        sub_title = " -- 20 layers"
+        PHS_1D_plot_bus(clusters_20, typeCh, sub_title, number_bins)
     plt.tight_layout()
+    # for 16 layers
+    for i, typeCh in enumerate(typeChs):
+        plt.subplot(2, 2, i+3)
+        sub_title = " -- 16 layers"
+        PHS_1D_plot_bus(clusters_16, typeCh, sub_title, number_bins)
+    plt.tight_layout()
+
     return fig
 
 
@@ -121,8 +135,8 @@ def PHS_2D_VMM_plot(window):
 
     number_bins = int(window.phsBins.text())
     # Import data
-    df_20 = window.Events#window.Clusters_20_layers
-    df_16 = window.Events#window.Clusters_16_layers
+    df_20 = window.Events
+    df_16 = window.Events
     # Initial filter
     clusters_20 = filter_events(df_20, window)
     clusters_16 = filter_events(df_16, window)
@@ -170,7 +184,7 @@ def PHS_2D_VMM_plot(window):
 # =============================================================================
 
 
-def PHS_2D_MG_plot(events, window):
+def PHS_2D_MG_plot(window):
     def PHS_2D_plot_bus(events, typeCh, limit, bins, sub_title, vmin, vmax):
         plt.xlabel('Channel')
         plt.ylabel('Charge [ADC channels]')
@@ -205,30 +219,52 @@ def PHS_2D_MG_plot(events, window):
                                 & (events['gCh'] <= 12)]
 
         return events_red
+
+
+    # Import data
+    df_20 = window.Events
+    df_16 = window.Events
     # Declare parameters
     typeChs = ['wCh', 'gCh']
-    limits = [[-0.5, 78.5], [-0.5, 11.5]]
-    bins = [79, 12]
+    limits_20 = [[-0.5, 78.5], [-0.5, 11.5]]
+    bins_20 = [79, 12]
+    limits_16 = [[-0.5, 62.5], [-0.5, 11.5]]
+    bins_16 = [63, 12]
     grids_or_wires = {'wCh': 'Wires', 'gCh': 'Grids'}
     # Initial filter
-    events = filter_events(events, window)
+    clusters_20 = filter_events(df_20, window)
+    clusters_16 = filter_events(df_16, window)
+
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (2D) - MG\n(%s, ...)' % window.data_sets.splitlines()[0]
     fig.suptitle(title, x=0.5, y=1.03)
     vmin = 1
-    vmax = events.shape[0] // 1000 + 100
+    vmax_20 = clusters_20.shape[0] // 1000 + 100
+    vmax_16 = clusters_16.shape[0] // 1000 + 100
     fig.set_figheight(4)
     fig.set_figwidth(10)
     # Plot figure
-    for i, (typeCh, limit, bins) in enumerate(zip(typeChs, limits, bins)):
+    # for 20 layers
+    for i, (typeCh, limit, bins) in enumerate(zip(typeChs, limits_20, bins_20)):
         # Filter events based on wires or grids
         if typeCh == 'wCh':
-            events_red = get_wire_events(events, window)
+            events_red_20 = get_wire_events(clusters_20, window)
         else:
-            events_red = get_grid_events(events, window)
-        plt.subplot(1, 2, i+1)
-        sub_title = 'PHS: %s' % grids_or_wires[typeCh]
-        PHS_2D_plot_bus(events_red, typeCh, limit, bins, sub_title, vmin, vmax)
+            events_red_20 = get_grid_events(clusters_20, window)
+        plt.subplot(2, 2, i+1)
+        sub_title = 'PHS: %s -- 20 layers' % grids_or_wires[typeCh]
+        PHS_2D_plot_bus(events_red_20, typeCh, limit, bins, sub_title, vmin, vmax_20)
+    plt.tight_layout()
+    # for 16 layers
+    for i, (typeCh, limit, bins) in enumerate(zip(typeChs, limits_16, bins_16)):
+        # Filter events based on wires or grids
+        if typeCh == 'wCh':
+            events_red_16 = get_wire_events(clusters_16, window)
+        else:
+            events_red_16 = get_grid_events(clusters_16, window)
+        plt.subplot(2, 2, i+3)
+        sub_title = 'PHS: %s -- 16 layers' % grids_or_wires[typeCh]
+        PHS_2D_plot_bus(events_red_16, typeCh, limit, bins, sub_title, vmin, vmax_16)
     plt.tight_layout()
     return fig

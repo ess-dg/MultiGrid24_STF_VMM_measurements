@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
             if self.VMM.isChecked():
                 fig = PHS_1D_VMM_plot(self)
             else:
-                fig = PHS_1D_MG_plot(self.Events, self)
+                fig = PHS_1D_MG_plot(self)
             fig.show()
 
     def PHS_2D_action(self):
@@ -99,7 +99,7 @@ class MainWindow(QMainWindow):
             if self.VMM.isChecked():
                 fig = PHS_2D_VMM_plot(self)
             else:
-                fig = PHS_2D_MG_plot(self.Events, self)
+                fig = PHS_2D_MG_plot(self)
             fig.show()
 
     def Coincidences_2D_action(self):
@@ -109,7 +109,7 @@ class MainWindow(QMainWindow):
 
     def Coincidences_3D_action(self):
         if self.data_sets != '':
-            Coincidences_3D_plot(self.Clusters, self)
+            Coincidences_3D_plot(self)
 
     def timestamp_action(self):
         if self.data_sets != '':

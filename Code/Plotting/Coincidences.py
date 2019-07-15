@@ -54,7 +54,7 @@ def Coincidences_2D_plot(window):
 # Coincidence Histogram (3D)
 # =============================================================================
 
-def Coincidences_3D_plot(df, window):
+def Coincidences_3D_plot(window):
     # Import data
     df_20 = window.Clusters
     df_16 = window.Clusters
