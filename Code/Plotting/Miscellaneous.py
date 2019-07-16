@@ -28,14 +28,3 @@ def timestamp_plot(events, window):
     return fig
 
 
-
-
-
-
-
-
-
-
-
-
-
