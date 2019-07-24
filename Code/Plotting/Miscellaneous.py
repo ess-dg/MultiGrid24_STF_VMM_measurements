@@ -14,17 +14,33 @@ from Plotting.HelperFunctions import filter_events
 # =============================================================================
 
 
-def timestamp_plot(events, window):
+def timestamp_plot(window):
+    # Import data
+    df_20 = window.Events
+    df_16 = window.Events
     # Initial filter
-    events = filter_events(events, window)
+    events_20 = filter_events(df_20, window)
+    events_16 = filter_events(df_16, window)
     # Plot
     fig = plt.figure()
-    plt.plot(events.srs_timestamp, color='black', zorder=5)
-    plt.title('Timestamp vs event number')
+    plt.suptitle('Timestamp vs event number')
+    # 20 layers
+    plt.subplot(1, 2, 1)
+    plt.title('20 layers')
+    plt.plot(events_20.srs_timestamp, color='black', zorder=5)
+    plt.title('Timestamp vs event number -- 20 layers')
+    plt.xlabel('Event number')
+    plt.ylabel('Timestamp [TDC channels]')
+    plt.grid(True, which='major', zorder=0)
+    plt.grid(True, which='minor', linestyle='--', zorder=0)
+
+    # for 16 layers
+    plt.subplot(1, 2, 2)
+    plt.title('16 layers')
+    plt.plot(events_16.srs_timestamp, color='black', zorder=5)
+    plt.title('Timestamp vs event number -- 16 layers')
     plt.xlabel('Event number')
     plt.ylabel('Timestamp [TDC channels]')
     plt.grid(True, which='major', zorder=0)
     plt.grid(True, which='minor', linestyle='--', zorder=0)
     return fig
-
-

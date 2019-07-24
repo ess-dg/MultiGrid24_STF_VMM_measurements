@@ -44,9 +44,6 @@ class MainWindow(QMainWindow):
         file_paths = QFileDialog.getOpenFileNames()[0]
         size = len(file_paths)
         if size > 0:
-            # Intitate progress bar
-            self.cluster_progress.show()
-            self.cluster_progress.setValue(0)
             # Check if we want to append or write
             if self.write_button.isChecked():
                 self.measurement_time = 0
@@ -62,11 +59,8 @@ class MainWindow(QMainWindow):
                 self.measurement_time += self.get_duration(events)
                 self.Clusters = self.Clusters.append(clusters)
                 self.Events = self.Events.append(events)
-                self.cluster_progress.setValue(((i+1)/len(file_paths))*100)
-                self.refresh_window()
             self.Clusters.reset_index(drop=True, inplace=True)
             self.Events.reset_index(drop=True, inplace=True)
-            self.cluster_progress.close()
             # Assign data set names and refresh window
             file_names = self.get_file_names(file_paths)
             self.data_sets += file_names
@@ -89,31 +83,31 @@ class MainWindow(QMainWindow):
     def PHS_1D_action(self):
         if self.data_sets != '':
             if self.VMM.isChecked():
-                fig = PHS_1D_VMM_plot(self.Events, self)
+                fig = PHS_1D_VMM_plot(self)
             else:
-                fig = PHS_1D_MG_plot(self.Events, self)
+                fig = PHS_1D_MG_plot(self)
             fig.show()
 
     def PHS_2D_action(self):
         if self.data_sets != '':
             if self.VMM.isChecked():
-                fig = PHS_2D_VMM_plot(self.Events, self)
+                fig = PHS_2D_VMM_plot(self)
             else:
-                fig = PHS_2D_MG_plot(self.Events, self)
+                fig = PHS_2D_MG_plot(self)
             fig.show()
 
     def Coincidences_2D_action(self):
         if self.data_sets != '':
-            fig = Coincidences_2D_plot(self.Clusters, self)
+            fig = Coincidences_2D_plot(self)
             fig.show()
 
     def Coincidences_3D_action(self):
         if self.data_sets != '':
-            Coincidences_3D_plot(self.Clusters, self)
+            Coincidences_3D_plot(self)
 
     def timestamp_action(self):
         if self.data_sets != '':
-            fig = timestamp_plot(self.Events, self)
+            fig = timestamp_plot(self)
             fig.show()
 
     # =========================================================================
