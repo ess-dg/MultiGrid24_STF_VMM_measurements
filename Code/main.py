@@ -44,9 +44,6 @@ class MainWindow(QMainWindow):
         file_paths = QFileDialog.getOpenFileNames()[0]
         size = len(file_paths)
         if size > 0:
-            # Intitate progress bar
-            self.cluster_progress.show()
-            self.cluster_progress.setValue(0)
             # Check if we want to append or write
             if self.write_button.isChecked():
                 self.measurement_time = 0
@@ -62,11 +59,8 @@ class MainWindow(QMainWindow):
                 self.measurement_time += self.get_duration(events)
                 self.Clusters = self.Clusters.append(clusters)
                 self.Events = self.Events.append(events)
-                self.cluster_progress.setValue(((i+1)/len(file_paths))*100)
-                self.refresh_window()
             self.Clusters.reset_index(drop=True, inplace=True)
             self.Events.reset_index(drop=True, inplace=True)
-            self.cluster_progress.close()
             # Assign data set names and refresh window
             file_names = self.get_file_names(file_paths)
             self.data_sets += file_names
