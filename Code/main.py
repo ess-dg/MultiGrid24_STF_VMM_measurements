@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
 
     def cluster_action(self):
         # Import data
-        file_paths = QFileDialog.getOpenFileNames()[0]
+        file_paths = QFileDialog.getOpenFileNames(self, 'Open file', '../data')[0]
         size = len(file_paths)
         if size > 0:
             # Check if we want to append or write
