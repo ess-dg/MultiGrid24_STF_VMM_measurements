@@ -5,6 +5,7 @@ from PyQt5 import uic
 import sys
 import os
 import pandas as pd
+import time
 
 from cluster import import_data, cluster_data, save_data, load_data
 from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
@@ -41,6 +42,7 @@ class MainWindow(QMainWindow):
     # =========================================================================
 
     def cluster_action(self):
+        t0 = time.time()
         # Import data
         file_paths = QFileDialog.getOpenFileNames(self, 'Open file', '../data')[0]
         size = len(file_paths)
@@ -70,6 +72,7 @@ class MainWindow(QMainWindow):
             self.update()
             self.data_sets = file_names
             self.refresh_window()
+            print('Duration: %f' % (time.time() - t0))
 
     def save_action(self):
         save_path = QFileDialog.getSaveFileName()[0]
