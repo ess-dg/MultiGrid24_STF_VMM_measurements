@@ -11,6 +11,7 @@ from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
                           PHS_2D_MG_plot)
 from Plotting.Coincidences import Coincidences_2D_plot, Coincidences_3D_plot
 from Plotting.Miscellaneous import timestamp_plot
+from Plotting.HelperFunctions import filter_coincident_events
 
 # =============================================================================
 # Windows
@@ -110,6 +111,16 @@ class MainWindow(QMainWindow):
             fig = timestamp_plot(self)
             fig.show()
 
+    def rate_action(self):
+        if self.data_sets != '':
+            ce = self.Clusters
+            ce_red = filter_coincident_events(ce, self)
+            start_time = ce_red.head(1)['Time'].values[0]
+            end_time = ce_red.tail(1)['Time'].values[0]
+            rate = ce_red.shape[0]/((end_time - start_time) * 1e-9)
+            print('Rate: %f Hz' % rate)
+
+
     # =========================================================================
     # Helper Functions
     # =========================================================================
@@ -127,6 +138,7 @@ class MainWindow(QMainWindow):
         self.Coincidences_3D_button.clicked.connect(self.Coincidences_3D_action)
         # Miscellaneous
         self.timestamp_button.clicked.connect(self.timestamp_action)
+        self.rate_button.clicked.connect(self.rate_action)
         self.toogle_VMM_MG()
 
     def refresh_window(self):
