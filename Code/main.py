@@ -26,8 +26,10 @@ class MainWindow(QMainWindow):
         self.app = app
         self.measurement_time = 0
         self.data_sets = ''
-        self.Clusters = pd.DataFrame()
-        self.Events = pd.DataFrame()
+        self.Clusters_20_layers = pd.DataFrame()
+        self.Clusters_16_layers = pd.DataFrame()
+        self.Events_20_layers = pd.DataFrame()
+        self.Events_16_layers = pd.DataFrame()
         self.cluster_progress.close()
         self.save_progress.close()
         self.load_progress.close()
@@ -41,7 +43,7 @@ class MainWindow(QMainWindow):
 
     def cluster_action(self):
         # Import data
-        file_paths = QFileDialog.getOpenFileNames()[0]
+        file_paths = QFileDialog.getOpenFileNames(self, 'Open file', "../data")[0]
         size = len(file_paths)
         if size > 0:
             # Intitate progress bar
@@ -50,8 +52,10 @@ class MainWindow(QMainWindow):
             # Check if we want to append or write
             if self.write_button.isChecked():
                 self.measurement_time = 0
-                self.Clusters = pd.DataFrame()
-                self.Events = pd.DataFrame()
+                self.Clusters_20_layers = pd.DataFrame()
+                self.Clusters_16_layers = pd.DataFrame()
+                self.Events_20_layers = pd.DataFrame()
+                self.Events_16_layers = pd.DataFrame()
                 self.data_sets = ''
             else:
                 self.data_sets += '\n'
@@ -60,12 +64,16 @@ class MainWindow(QMainWindow):
                 data = import_data(file_path)
                 clusters, events = cluster_data(data, self, i+1, size)
                 self.measurement_time += self.get_duration(events)
-                self.Clusters = self.Clusters.append(clusters)
-                self.Events = self.Events.append(events)
+                self.Clusters_20_layers = self.Clusters_20_layers.append(clusters)
+                self.Clusters_16_layers = self.Clusters_16_layers.append(clusters)
+                self.Events_20_layers = self.Events_20_layers.append(events)
+                self.Events_16_layers = self.Events_16_layers.append(events)
                 self.cluster_progress.setValue(((i+1)/len(file_paths))*100)
                 self.refresh_window()
-            self.Clusters.reset_index(drop=True, inplace=True)
-            self.Events.reset_index(drop=True, inplace=True)
+            self.Clusters_20_layers.reset_index(drop=True, inplace=True)
+            self.Clusters_16_layers.reset_index(drop=True, inplace=True)
+            self.Events_20_layers.reset_index(drop=True, inplace=True)
+            self.Events_16_layers.reset_index(drop=True, inplace=True)
             self.cluster_progress.close()
             # Assign data set names and refresh window
             file_names = self.get_file_names(file_paths)
@@ -75,6 +83,9 @@ class MainWindow(QMainWindow):
             self.update()
             self.data_sets = file_names
             self.refresh_window()
+            #print(self.Clusters_16_layers)
+            print(self.Clusters_20_layers)
+            print(self.Events_20_layers)
 
     def save_action(self):
         save_path = QFileDialog.getSaveFileName()[0]

@@ -118,8 +118,8 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     df_clustered = pd.DataFrame(data_dict)
     # Append vector to raw dataframe with MG channels
     df_raw = df_raw.join(pd.DataFrame(MG_channels))
-    print(df_raw)
-    print(df_clustered)
+    #print(df_raw)
+    #print(df_clustered)
     return df_clustered, df_raw
 
 # =============================================================================
@@ -225,7 +225,3 @@ def get_VMM_to_MG24_mapping():
     for row in mapping_matrix:
         VMM_ch_to_MG24_ch[row[1]][row[2]] = row[5]
     return VMM_ch_to_MG24_ch
-
-
-
-

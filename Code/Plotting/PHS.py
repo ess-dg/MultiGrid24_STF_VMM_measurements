@@ -31,8 +31,8 @@ def PHS_1D_VMM_plot(window):
     VMM_order_16 = [2, 3, 4, 5]
     number_bins = int(window.phsBins.text())
     # Import data
-    df_20 = window.Events
-    df_16 = window.Events
+    df_20 = window.Events_20_layers
+    df_16 = window.Events_16_layers
     # Initial filter
     clusters_20 = filter_events(df_20, window)
     clusters_16 = filter_events(df_16, window)
@@ -84,8 +84,8 @@ def PHS_1D_MG_plot(window):
     grids_or_wires = {'wCh': 'Wires', 'gCh': 'Grids'}
 
     # Import data
-    df_20 = window.Events
-    df_16 = window.Events
+    df_20 = window.Events_20_layers
+    df_16 = window.Events_16_layers
     # Initial filter
     clusters_20 = filter_events(df_20, window)
     clusters_16 = filter_events(df_16, window)
@@ -135,8 +135,8 @@ def PHS_2D_VMM_plot(window):
 
     number_bins = int(window.phsBins.text())
     # Import data
-    df_20 = window.Events
-    df_16 = window.Events
+    df_20 = window.Events_20_layers
+    df_16 = window.Events_16_layers
     # Initial filter
     clusters_20 = filter_events(df_20, window)
     clusters_16 = filter_events(df_16, window)
@@ -222,8 +222,8 @@ def PHS_2D_MG_plot(window):
 
 
     # Import data
-    df_20 = window.Events
-    df_16 = window.Events
+    df_20 = window.Events_20_layers
+    df_16 = window.Events_16_layers
     # Declare parameters
     typeChs = ['wCh', 'gCh']
     limits_20 = [[-0.5, 78.5], [-0.5, 11.5]]

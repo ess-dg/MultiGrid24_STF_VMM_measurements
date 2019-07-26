@@ -18,8 +18,8 @@ def Coincidences_2D_plot(window):
     # Declare parameters (added with condition if empty array)
     data_sets = window.data_sets.splitlines()[0]
     # Import data
-    df_20 = window.Clusters
-    df_16 = window.Clusters
+    df_20 = window.Clusters_20_layers
+    df_16 = window.Clusters_16_layers
     # Initial filter, keep only coincident events
     clusters_20 = filter_coincident_events(df_20, window)
     clusters_16 = filter_coincident_events(df_16, window)
@@ -56,8 +56,8 @@ def Coincidences_2D_plot(window):
 
 def Coincidences_3D_plot(window):
     # Import data
-    df_20 = window.Clusters
-    df_16 = window.Clusters
+    df_20 = window.Clusters_20_layers
+    df_16 = window.Clusters_16_layers
     # Perform initial filters
     clusters_20 = filter_coincident_events(df_20, window)
     clusters_16 = filter_coincident_events(df_16, window)
