@@ -5,12 +5,14 @@ from PyQt5 import uic
 import sys
 import os
 import pandas as pd
+import time
 
 from cluster import import_data, cluster_data, save_data, load_data
 from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
-                          PHS_2D_MG_plot)
+                          PHS_2D_MG_plot, PHS_Individual_plot)
 from Plotting.Coincidences import Coincidences_2D_plot, Coincidences_3D_plot
 from Plotting.Miscellaneous import timestamp_plot
+from Plotting.HelperFunctions import filter_coincident_events
 
 # =============================================================================
 # Windows
@@ -42,13 +44,11 @@ class MainWindow(QMainWindow):
     # =========================================================================
 
     def cluster_action(self):
+        t0 = time.time()
         # Import data
-        file_paths = QFileDialog.getOpenFileNames(self, 'Open file', "../data")[0]
+        file_paths = QFileDialog.getOpenFileNames(self, 'Open file', '../data')[0]
         size = len(file_paths)
         if size > 0:
-            # Intitate progress bar
-            self.cluster_progress.show()
-            self.cluster_progress.setValue(0)
             # Check if we want to append or write
             if self.write_button.isChecked():
                 self.measurement_time = 0
@@ -113,6 +113,10 @@ class MainWindow(QMainWindow):
                 fig = PHS_2D_MG_plot(self)
             fig.show()
 
+    def PHS_Individual_action(self):
+            if self.data_sets != '':
+                PHS_Individual_plot(self)
+
     def Coincidences_2D_action(self):
         if self.data_sets != '':
             fig = Coincidences_2D_plot(self)
@@ -127,6 +131,16 @@ class MainWindow(QMainWindow):
             fig = timestamp_plot(self)
             fig.show()
 
+    def rate_action(self):
+        if self.data_sets != '':
+            ce = self.Clusters
+            ce_red = filter_coincident_events(ce, self)
+            start_time = ce_red.head(1)['Time'].values[0]
+            end_time = ce_red.tail(1)['Time'].values[0]
+            rate = ce_red.shape[0]/((end_time - start_time) * 1e-9)
+            print('Rate: %f Hz' % rate)
+
+
     # =========================================================================
     # Helper Functions
     # =========================================================================
@@ -139,11 +153,13 @@ class MainWindow(QMainWindow):
         # PHS
         self.PHS_1D_button.clicked.connect(self.PHS_1D_action)
         self.PHS_2D_button.clicked.connect(self.PHS_2D_action)
+        self.PHS_Individual_button.clicked.connect(self.PHS_Individual_action)
         # Coincidences
         self.Coincidences_2D_button.clicked.connect(self.Coincidences_2D_action)
         self.Coincidences_3D_button.clicked.connect(self.Coincidences_3D_action)
         # Miscellaneous
         self.timestamp_button.clicked.connect(self.timestamp_action)
+        self.rate_button.clicked.connect(self.rate_action)
         self.toogle_VMM_MG()
 
     def refresh_window(self):

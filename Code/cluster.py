@@ -106,11 +106,6 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
                 data_dict[xCh][index] = mgCh
         # Add MG channel to the raw events
         MG_channels[xCh][i+1] = mgCh
-        # Print progress on screen
-        if i % 2000000 == 1:
-            progress = (i/(size*file_nbrs))*100 + ((file_nbr-1)/file_nbrs)*100
-            window.cluster_progress.setValue(progress)
-            window.refresh_window()
 
     #Remove empty elements and save in DataFrame for easier analysis
     for key in data_dict.keys():
