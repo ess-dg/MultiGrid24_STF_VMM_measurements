@@ -3,7 +3,7 @@ import numpy as np
 import os
 import pandas as pd
 from matplotlib.colors import LogNorm
-from Plotting.HelperFunctions import filter_events
+from Plotting.HelperFunctions import filter_events, filter_coincident_events
 
 # ============================================================================
 # PHS (1D) - VMM
@@ -239,9 +239,9 @@ def PHS_2D_MG_plot(window):
     fig = plt.figure()
     title = 'PHS (2D) - MG\n(%s, ...)' % window.data_sets.splitlines()[0]
     fig.suptitle(title, x=0.5, y=1.03)
-    vmin = 1
-    vmax_20 = clusters_20.shape[0] // 1000 + 100
-    vmax_16 = clusters_16.shape[0] // 1000 + 100
+    vmin = None# 1
+    vmax_20 = None #clusters_20.shape[0] // 1000 + 100
+    vmax_16 = None #clusters_16.shape[0] // 1000 + 100
     fig.set_figheight(4)
     fig.set_figwidth(10)
     # Plot figure
@@ -268,3 +268,61 @@ def PHS_2D_MG_plot(window):
         PHS_2D_plot_bus(events_red_16, typeCh, limit, bins, sub_title, vmin, vmax_16)
     plt.tight_layout()
     return fig
+
+
+# =============================================================================
+# PHS (Individual Channels)
+# =============================================================================
+
+def PHS_Individual_plot(window):
+    # Import data
+    df_20 = window.Events
+    df_16 = window.Events
+    # Intial filter
+    events_16 = filter_events(df_16, window)
+    events_20 = filter_events(df_20, window)
+    # Declare parameters
+    events_vec = [events_16, events_20]
+    detectors = ['16_layers', '20_layers']
+    layers_vec = [16, 20]
+    dir_name = os.path.dirname(__file__)
+    folder_path = os.path.join(dir_name, '../../Results/PHS/')
+    number_bins = int(window.phsBins.text())
+    # Save all PHS
+    for events, detector, layers in zip(events_vec, detectors, layers_vec):
+        # Save wires PHS
+        for wCh in np.arange(0, layers*4, 1):
+            print('%s, Wires: %d/%d' % (detector, wCh, layers*4-1))
+            # Get ADC values
+            adcs = events[events.wCh == wCh]['adc']
+            # Plot
+            fig = plt.figure()
+            plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='step',
+                     color='black', zorder=5)
+            plt.grid(True, which='major', zorder=0)
+            plt.grid(True, which='minor', linestyle='--', zorder=0)
+            plt.xlabel('Collected charge [ADC channels]')
+            plt.ylabel('Counts')
+            plt.title('PHS wires - Channel %d\nData set: %s' % (wCh, window.data_sets))
+            # Save
+            output_path = '%s/%s/Wires/Channel_%d.pdf' % (folder_path, detector, wCh)
+            fig.savefig(output_path, bbox_inches='tight')
+            plt.close()
+        # Save grids PHS
+        for gCh in np.arange(0, 12, 1):
+            print('%s, Grids: %d/11' % (detector, gCh))
+            # Get ADC values
+            adcs = events[events.gCh == gCh]['adc']
+            # Plot
+            fig = plt.figure()
+            plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='step',
+                     color='black', zorder=5)
+            plt.grid(True, which='major', zorder=0)
+            plt.grid(True, which='minor', linestyle='--', zorder=0)
+            plt.xlabel('Collected charge [ADC channels]')
+            plt.ylabel('Counts')
+            plt.title('PHS grids - Channel %d\nData set: %s' % (gCh, window.data_sets))
+            # Save
+            output_path = '%s/%s/Grids/Channel_%d.pdf' % (folder_path, detector, gCh)
+            fig.savefig(output_path, bbox_inches='tight')
+            plt.close()

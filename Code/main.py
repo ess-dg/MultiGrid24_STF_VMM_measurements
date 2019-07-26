@@ -9,7 +9,7 @@ import time
 
 from cluster import import_data, cluster_data, save_data, load_data
 from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
-                          PHS_2D_MG_plot)
+                          PHS_2D_MG_plot, PHS_Individual_plot)
 from Plotting.Coincidences import Coincidences_2D_plot, Coincidences_3D_plot
 from Plotting.Miscellaneous import timestamp_plot
 from Plotting.HelperFunctions import filter_coincident_events
@@ -100,6 +100,10 @@ class MainWindow(QMainWindow):
                 fig = PHS_2D_MG_plot(self)
             fig.show()
 
+    def PHS_Individual_action(self):
+            if self.data_sets != '':
+                PHS_Individual_plot(self)
+
     def Coincidences_2D_action(self):
         if self.data_sets != '':
             fig = Coincidences_2D_plot(self)
@@ -136,6 +140,7 @@ class MainWindow(QMainWindow):
         # PHS
         self.PHS_1D_button.clicked.connect(self.PHS_1D_action)
         self.PHS_2D_button.clicked.connect(self.PHS_2D_action)
+        self.PHS_Individual_button.clicked.connect(self.PHS_Individual_action)
         # Coincidences
         self.Coincidences_2D_button.clicked.connect(self.Coincidences_2D_action)
         self.Coincidences_3D_button.clicked.connect(self.Coincidences_3D_action)

@@ -143,7 +143,7 @@ def Coincidences_3D_plot(window):
                                y=hist[1],
                                z=hist[2],
                                mode='markers',
-                               marker=dict(size=5,
+                               marker=dict(size=20,
                                            color=np.log10(hist[3]),
                                            colorscale='Jet',
                                            opacity=1,
@@ -169,7 +169,7 @@ def Coincidences_3D_plot(window):
     fig.layout.showlegend = False
     # If in plot He3-tubes histogram, return traces, else save HTML and plot
     py.offline.plot(fig,
-                    filename='../Results/Ce3Dhistogram.html',
+                    filename='../Results/Coincidences_3D/Ce3Dhistogram.html',
                     auto_open=True)
     #pio.write_image(fig, '../Results/HTML_files/Ce3Dhistogram.pdf')
 

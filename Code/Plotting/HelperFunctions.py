@@ -83,7 +83,7 @@ def filter_coincident_events(ce, window):
     gCh_filter_on = window.gCh_filter.isChecked()
     gCh_min = window.gCh_min.value()
     gCh_max = window.gCh_max.value()
-
+    
     if wCh_filter_on and gCh_filter_on:
         ce_red = ce_red[((ce_red['wCh'] >= wCh_min) & (ce_red['wCh'] <= wCh_max)) |
                         ((ce_red['gCh'] >= gCh_min) & (ce_red['gCh'] <= gCh_max))]
