@@ -13,6 +13,7 @@ from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
 from Plotting.Coincidences import Coincidences_2D_plot, Coincidences_3D_plot
 from Plotting.Miscellaneous import timestamp_plot
 from Plotting.HelperFunctions import filter_coincident_events
+from Plotting.HelpMessage import gethelp
 
 # =============================================================================
 # Windows
@@ -28,11 +29,11 @@ class MainWindow(QMainWindow):
         self.app = app
         self.measurement_time = 0
         self.data_sets = ''
-        self.Clusters_20_layers = pd.DataFrame()
+        #self.Clusters_20_layers = pd.DataFrame()
         self.Clusters_16_layers = pd.DataFrame()
-        self.Events_20_layers = pd.DataFrame()
+        #self.Events_20_layers = pd.DataFrame()
         self.Events_16_layers = pd.DataFrame()
-        self.cluster_progress.close()
+        #self.cluster_progress.close()
         self.save_progress.close()
         self.load_progress.close()
         self.VMM.setEnabled
@@ -54,27 +55,29 @@ class MainWindow(QMainWindow):
                 self.measurement_time = 0
                 self.Clusters_20_layers = pd.DataFrame()
                 self.Clusters_16_layers = pd.DataFrame()
-                self.Events_20_layers = pd.DataFrame()
-                self.Events_16_layers = pd.DataFrame()
+                self.Events_20_layers   = pd.DataFrame()
+                self.Events_16_layers   = pd.DataFrame()
                 self.data_sets = ''
             else:
                 self.data_sets += '\n'
             # Iterate through selected files
             for i, file_path in enumerate(file_paths):
-                data = import_data(file_path)
+                data = import_data(file_path, self)
+                print("DATA")
+                print(data)
                 clusters, events = cluster_data(data, self, i+1, size)
+                print("EVENTS")
+                print(events)
                 self.measurement_time += self.get_duration(events)
-                self.Clusters_20_layers = self.Clusters_20_layers.append(clusters)
+                #self.Clusters_20_layers = self.Clusters_20_layers.append(clusters)
                 self.Clusters_16_layers = self.Clusters_16_layers.append(clusters)
-                self.Events_20_layers = self.Events_20_layers.append(events)
+                #self.Events_20_layers = self.Events_20_layers.append(events)
                 self.Events_16_layers = self.Events_16_layers.append(events)
-                self.cluster_progress.setValue(((i+1)/len(file_paths))*100)
                 self.refresh_window()
-            self.Clusters_20_layers.reset_index(drop=True, inplace=True)
+            #self.Clusters_20_layers.reset_index(drop=True, inplace=True)
             self.Clusters_16_layers.reset_index(drop=True, inplace=True)
-            self.Events_20_layers.reset_index(drop=True, inplace=True)
+            #self.Events_20_layers.reset_index(drop=True, inplace=True)
             self.Events_16_layers.reset_index(drop=True, inplace=True)
-            self.cluster_progress.close()
             # Assign data set names and refresh window
             file_names = self.get_file_names(file_paths)
             self.data_sets += file_names
@@ -84,8 +87,8 @@ class MainWindow(QMainWindow):
             self.data_sets = file_names
             self.refresh_window()
             #print(self.Clusters_16_layers)
-            print(self.Clusters_20_layers)
-            print(self.Events_20_layers)
+            #print(self.Clusters_20_layers)
+            #print(self.Events_20_layers)
 
     def save_action(self):
         save_path = QFileDialog.getSaveFileName()[0]
@@ -140,6 +143,10 @@ class MainWindow(QMainWindow):
             rate = ce_red.shape[0]/((end_time - start_time) * 1e-9)
             print('Rate: %f Hz' % rate)
 
+    def help_action(self):
+        print("HELP!!!!")
+        gethelp()
+
 
     # =========================================================================
     # Helper Functions
@@ -161,6 +168,10 @@ class MainWindow(QMainWindow):
         self.timestamp_button.clicked.connect(self.timestamp_action)
         self.rate_button.clicked.connect(self.rate_action)
         self.toogle_VMM_MG()
+        # Help
+        self.helpbutton.clicked.connect(self.help_action)
+        self.helpbutton.setStyleSheet("background-color:rgb(255,70,10)")
+
 
     def refresh_window(self):
         self.update()

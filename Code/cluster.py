@@ -18,9 +18,12 @@ with warnings.catch_warnings():
 # =============================================================================
 
 
-def import_data(file_path):
+def import_data(file_path, window):
     h5_file = h5py.File(file_path, 'r')
-    data = pd.DataFrame(h5_file['srs_hits'].value)
+    if window.sample_button.isChecked():
+        data = pd.DataFrame(h5_file['srs_hits'].value[:1000000])
+    else:
+        data = pd.DataFrame(h5_file['srs_hits'].value)
     return data
 
 # =============================================================================
@@ -115,6 +118,11 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     df_raw = df_raw.join(pd.DataFrame(MG_channels))
     #print(df_raw)
     #print(df_clustered)
+    # print(df_raw['chip_id'])
+    # for i, chip in enumerate(df_raw['chip_id']):
+    #     if chip == 2:
+    #         print(df_raw['channel'][i])
+    print(data_dict['Time'])
     return df_clustered, df_raw
 
 # =============================================================================
@@ -213,10 +221,12 @@ def mkdir_p(mypath):
 def get_VMM_to_MG24_mapping():
     # Import mapping
     dir_name = os.path.dirname(__file__)
-    path_mapping = os.path.join(dir_name, '../Tables/MG_to_VMM_Mapping.xlsx')
+    path_mapping = os.path.join(dir_name, '../Tables/MG_to_VMM_Mapping_old.xlsx')
     mapping_matrix = pd.read_excel(path_mapping).values
+    #print(mapping_matrix)
     # Store in convenient format
     VMM_ch_to_MG24_ch = np.empty((6, 80), dtype='object')
     for row in mapping_matrix:
         VMM_ch_to_MG24_ch[row[1]][row[2]] = row[5]
+    #print(VMM_ch_to_MG24_ch)
     return VMM_ch_to_MG24_ch

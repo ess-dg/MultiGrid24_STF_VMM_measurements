@@ -16,7 +16,7 @@ from Plotting.HelperFunctions import filter_events
 
 def timestamp_plot(window):
     # Import data
-    df_20 = window.Events_20_layers
+    #df_20 = window.Events_20_layers
     df_16 = window.Events_16_layers
     # Initial filter
     #events_20 = filter_events(df_20, window)
@@ -24,6 +24,7 @@ def timestamp_plot(window):
     # Plot
     fig = plt.figure()
     plt.suptitle('Timestamp vs event number')
+    """
     # 20 layers
     plt.subplot(1, 2, 1)
     plt.title('20 layers')
@@ -33,7 +34,7 @@ def timestamp_plot(window):
     plt.ylabel('Timestamp [TDC channels]')
     plt.grid(True, which='major', zorder=0)
     plt.grid(True, which='minor', linestyle='--', zorder=0)
-
+    """
     # for 16 layers
     plt.subplot(1, 2, 2)
     plt.title('16 layers')
