@@ -60,6 +60,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     ADC = int(first_row['adc'])
     chip_id = int(first_row['chip_id'])
     Ch = int(first_row['channel'])
+
     # Start first cluster
     gw_ADC_max['wMAX'], gw_ADC_max['wMAX'] = 0, 0
     data_dict['wCh'][index], data_dict['gCh'][index] = -1, -1
@@ -78,6 +79,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     ADCs = df_raw['adc'].values[1:].astype(np.int64)
     chip_ids = df_raw['chip_id'].values[1:].astype(np.int64)
     Times = df_raw['srs_timestamp'].values[1:].astype(np.int64)
+
     # Iterate through data
     for i, (Ch, ADC, chip_id, Time) in enumerate(zip(Chs, ADCs, chip_ids, Times)):
         mgCh = VMM_ch_to_MG24_ch[chip_id][Ch]
@@ -122,7 +124,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     # for i, chip in enumerate(df_raw['chip_id']):
     #     if chip == 2:
     #         print(df_raw['channel'][i])
-    print(data_dict['Time'])
+
     return df_clustered, df_raw
 
 # =============================================================================

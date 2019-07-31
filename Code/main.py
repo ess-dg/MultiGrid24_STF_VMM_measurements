@@ -66,8 +66,6 @@ class MainWindow(QMainWindow):
                 print("DATA")
                 print(data)
                 clusters, events = cluster_data(data, self, i+1, size)
-                print("EVENTS")
-                print(events)
                 self.measurement_time += self.get_duration(events)
                 #self.Clusters_20_layers = self.Clusters_20_layers.append(clusters)
                 self.Clusters_16_layers = self.Clusters_16_layers.append(clusters)
@@ -87,6 +85,7 @@ class MainWindow(QMainWindow):
             self.data_sets = file_names
             self.refresh_window()
             #print(self.Clusters_16_layers)
+            #print(self.Events_16_layers)
             #print(self.Clusters_20_layers)
             #print(self.Events_20_layers)
 
