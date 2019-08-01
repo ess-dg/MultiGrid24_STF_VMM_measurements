@@ -121,10 +121,14 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     #print(df_raw)
     #print(df_clustered)
     # print(df_raw['chip_id'])
-    # for i, chip in enumerate(df_raw['chip_id']):
-    #     if chip == 2:
-    #         print(df_raw['channel'][i])
-
+    """
+    threes = 0
+    for i, chip in enumerate(df_raw['chip_id']):
+        if chip == 5:
+            threes = threes + 1
+            print(df_raw['channel'][i])
+    print(threes)
+    """
     return df_clustered, df_raw
 
 # =============================================================================
@@ -223,6 +227,7 @@ def mkdir_p(mypath):
 def get_VMM_to_MG24_mapping():
     # Import mapping
     dir_name = os.path.dirname(__file__)
+    #path_mapping = os.path.join(dir_name, '../Tables/Isabelle_MG_to_VMM_Mapping.xlsx')
     path_mapping = os.path.join(dir_name, '../Tables/MG_to_VMM_Mapping_old.xlsx')
     mapping_matrix = pd.read_excel(path_mapping).values
     #print(mapping_matrix)

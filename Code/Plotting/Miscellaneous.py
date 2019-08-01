@@ -45,3 +45,37 @@ def timestamp_plot(window):
     plt.grid(True, which='major', zorder=0)
     plt.grid(True, which='minor', linestyle='--', zorder=0)
     return fig
+
+def chip_channels_plot(window):
+    def chip_ch_plot_bus(events):
+        # Plot
+        plt.title("VMM chip %s" %VMM)
+        plt.xlabel('chip channel id')
+        plt.ylabel('Counts')
+        plt.grid(True, which='major', zorder=0)
+        plt.grid(True, which='minor', linestyle='--', zorder=0)
+        plt.yscale('log')
+        plt.hist(events.channel, color='lightgrey', bins=48,
+                 range=[-0.5, 47.5], ec='black', zorder=5)
+
+    # Import data before any clustering or mapping
+    #clusters_16 = window.data
+    clusters_16 = window.Events_16_layers
+    print(clusters_16)
+    # Declare parameters
+    VMM_order = [2, 3, 4, 5]
+
+    # Prepare figure
+    fig = plt.figure()
+    fig.set_figheight(8)
+    fig.set_figwidth(10)
+    plt.suptitle('Channels per chip \n(%s, ...)' % window.data_sets.splitlines()[0])
+    plt.title('16 layers')
+
+    # Plot figure
+    for i, VMM in enumerate(VMM_order):
+        events_VMM_16 = clusters_16[clusters_16.chip_id == VMM]
+        plt.subplot(2, 2, i+1)
+        chip_ch_plot_bus(events_VMM_16)
+    plt.tight_layout()
+    return fig

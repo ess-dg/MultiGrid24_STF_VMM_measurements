@@ -11,7 +11,7 @@ from cluster import import_data, cluster_data, save_data, load_data
 from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
                           PHS_2D_MG_plot, PHS_Individual_plot)
 from Plotting.Coincidences import Coincidences_2D_plot, Coincidences_3D_plot
-from Plotting.Miscellaneous import timestamp_plot
+from Plotting.Miscellaneous import timestamp_plot, chip_channels_plot
 from Plotting.HelperFunctions import filter_coincident_events
 from Plotting.HelpMessage import gethelp
 
@@ -63,9 +63,12 @@ class MainWindow(QMainWindow):
             # Iterate through selected files
             for i, file_path in enumerate(file_paths):
                 data = import_data(file_path, self)
+                self.data = data
                 print("DATA")
                 print(data)
                 clusters, events = cluster_data(data, self, i+1, size)
+                print("EVENTS")
+                print(events)
                 self.measurement_time += self.get_duration(events)
                 #self.Clusters_20_layers = self.Clusters_20_layers.append(clusters)
                 self.Clusters_16_layers = self.Clusters_16_layers.append(clusters)
@@ -146,6 +149,10 @@ class MainWindow(QMainWindow):
         print("HELP!!!!")
         gethelp()
 
+    def chip_channels_action(self):
+        if self.data_sets != '':
+            fig = chip_channels_plot(self)
+            fig.show()
 
     # =========================================================================
     # Helper Functions
@@ -166,10 +173,12 @@ class MainWindow(QMainWindow):
         # Miscellaneous
         self.timestamp_button.clicked.connect(self.timestamp_action)
         self.rate_button.clicked.connect(self.rate_action)
+        self.chip_ch_button.clicked.connect(self.chip_channels_action)
         self.toogle_VMM_MG()
         # Help
         self.helpbutton.clicked.connect(self.help_action)
         self.helpbutton.setStyleSheet("background-color:rgb(255,70,10)")
+
 
 
     def refresh_window(self):

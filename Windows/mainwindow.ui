@@ -1215,6 +1215,19 @@
      <string>sample</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="chip_ch_button">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>250</y>
+      <width>121</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>VMM channels</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

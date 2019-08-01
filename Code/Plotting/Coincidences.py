@@ -23,7 +23,7 @@ def Coincidences_2D_plot(window):
     # Initial filter, keep only coincident events
     #clusters_20 = filter_coincident_events(df_20, window)
     clusters_16 = filter_coincident_events(df_16, window)
-
+    print("clusters 16\n", clusters_16)
     # Plot data
     fig = plt.figure()
     plt.suptitle('Coincident events (2D)\nData set(s): %s' % data_sets)
@@ -205,9 +205,10 @@ def get_MG24_to_XYZ_mapping():
     MG24_ch_to_coord_16 = np.empty((13, 80), dtype='object')
     for gCh in np.arange(0, 13, 1):
         for wCh in np.arange(0, 80, 1):
-            x = (wCh // 20) * LayerSpacing
+            x = (wCh // 16) * LayerSpacing
             y = gCh * GridSpacing
-            z = (wCh % 20) * WireSpacing
+            z = (wCh % 16) * WireSpacing
             MG24_ch_to_coord_16[gCh, wCh] = {'x': x, 'y': y, 'z': z}
     #return MG24_ch_to_coord_20, MG24_ch_to_coord_16
+    #print("spatial mapping\n", MG24_ch_to_coord_16)
     return MG24_ch_to_coord_16
