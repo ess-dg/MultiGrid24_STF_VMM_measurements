@@ -33,6 +33,7 @@ def PHS_1D_VMM_plot(window):
     # Import data
     #df_20 = window.Events_20_layers
     df_16 = window.Events_16_layers
+    #print(df_16)
     # Initial filter
     #clusters_20 = filter_events(df_20, window)
     clusters_16 = filter_events(df_16, window)
@@ -156,7 +157,7 @@ def PHS_2D_VMM_plot(window):
                     [17.5, 46.5],
                     [16.5, 46.5],
                     [16.5, 46.5]]
-    VMM_bins_20 = [33, 29, 30, 30]
+    #VMM_bins_20 = [33, 29, 30, 30]
     VMM_bins_16 = [33, 29, 30, 30]
     # Prepare figure
     fig = plt.figure()
@@ -180,7 +181,7 @@ def PHS_2D_VMM_plot(window):
     # for 16 layers
     for i, (VMM, limit, bins) in enumerate(zip(VMM_order_16, VMM_limits_16, VMM_bins_16)):
         events_VMM_16 = clusters_16[clusters_16.chip_id == VMM]
-        plt.subplot(4, 2, i+5)
+        plt.subplot(2, 2, i+1)
         sub_title = 'VMM: %s -- 16 layers' % VMM
         PHS_2D_plot_bus(events_VMM_16, VMM, limit, bins, sub_title, vmin, vmax_16)
     plt.tight_layout()
@@ -286,7 +287,7 @@ def PHS_2D_MG_plot(window):
 def PHS_Individual_plot(window):
     # Import data
     #df_20 = window.Events
-    df_16 = window.Events
+    df_16 = window.Events_16_layers
     # Intial filter
     events_16 = filter_events(df_16, window)
     #events_20 = filter_events(df_20, window)

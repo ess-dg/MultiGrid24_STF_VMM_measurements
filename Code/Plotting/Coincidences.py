@@ -59,6 +59,7 @@ def Coincidences_3D_plot(window):
     # Import data
     #df_20 = window.Clusters_20_layers
     df_16 = window.Clusters_16_layers
+    data_sets = window.data_sets.splitlines()[0]
     # Perform initial filters
     #clusters_20 = filter_coincident_events(df_20, window)
     clusters_16 = filter_coincident_events(df_16, window)
@@ -100,15 +101,15 @@ def Coincidences_3D_plot(window):
     """
     # 16 layers
     H_16, edges_16 = np.histogramdd(clusters_16[['wCh', 'gCh']].values,
-                              bins=(80, 13),
-                              range=((0, 80), (0, 13))
+                              bins=(80, 12),
+                              range=((0, 80), (0, 12))
                               )
     # Insert results into an array
     hist_16 = [[], [], [], []]
     loc_16 = 0
     labels_16 = []
     for wCh in range(0, 80):
-        for gCh in range(0, 13):
+        for gCh in range(0, 12):
             over_min = H_16[wCh, gCh] > min_count
             under_max = H_16[wCh, gCh] <= max_count
             if over_min and under_max:
@@ -172,7 +173,7 @@ def Coincidences_3D_plot(window):
     fig['layout']['scene1']['xaxis'].update(title='x [mm]')
     fig['layout']['scene1']['yaxis'].update(title='y [mm]')
     fig['layout']['scene1']['zaxis'].update(title='z [mm]')
-    fig['layout'].update(title='Coincidences (3D)')
+    fig['layout'].update(title='Coincidences (3D) \n%s' %data_sets)
     fig.layout.showlegend = False
     # If in plot He3-tubes histogram, return traces, else save HTML and plot
     py.offline.plot(fig,
@@ -202,8 +203,8 @@ def get_MG24_to_XYZ_mapping():
             MG24_ch_to_coord_20[gCh, wCh] = {'x': x, 'y': y, 'z': z}
     """
     # 16 layers
-    MG24_ch_to_coord_16 = np.empty((13, 80), dtype='object')
-    for gCh in np.arange(0, 13, 1):
+    MG24_ch_to_coord_16 = np.empty((12, 80), dtype='object')
+    for gCh in np.arange(0, 12, 1):
         for wCh in np.arange(0, 80, 1):
             x = (wCh // 16) * LayerSpacing
             y = gCh * GridSpacing

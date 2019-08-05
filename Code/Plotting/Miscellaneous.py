@@ -46,6 +46,10 @@ def timestamp_plot(window):
     plt.grid(True, which='minor', linestyle='--', zorder=0)
     return fig
 
+# =============================================================================
+# Number of times a channel is used in each VMM chip
+# =============================================================================
+
 def chip_channels_plot(window):
     def chip_ch_plot_bus(events):
         # Plot
@@ -55,13 +59,14 @@ def chip_channels_plot(window):
         plt.grid(True, which='major', zorder=0)
         plt.grid(True, which='minor', linestyle='--', zorder=0)
         plt.yscale('log')
-        plt.hist(events.channel, color='lightgrey', bins=48,
-                 range=[-0.5, 47.5], ec='black', zorder=5)
+        plt.xticks(np.arange(0, 65, 10))
+        plt.hist(events.channel, bins=65, range=[-0.5, 65.5],
+                 color='lightgrey', ec='black', zorder=5)
 
     # Import data before any clustering or mapping
-    #clusters_16 = window.data
-    clusters_16 = window.Events_16_layers
-    print(clusters_16)
+    clusters_16 = window.data
+    #clusters_16 = window.Events_16_layers
+    #print(clusters_16)
     # Declare parameters
     VMM_order = [2, 3, 4, 5]
 

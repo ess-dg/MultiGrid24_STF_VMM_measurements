@@ -5,6 +5,7 @@ from PyQt5 import uic
 import sys
 import os
 import pandas as pd
+import numpy as np
 import time
 
 from cluster import import_data, cluster_data, save_data, load_data
@@ -66,9 +67,14 @@ class MainWindow(QMainWindow):
                 self.data = data
                 print("DATA")
                 print(data)
+                print("length",len(data))
                 clusters, events = cluster_data(data, self, i+1, size)
                 print("EVENTS")
                 print(events)
+                print("length", len(events))
+                print("CLUSTERS")
+                print(clusters)
+                print("length", len(clusters))
                 self.measurement_time += self.get_duration(events)
                 #self.Clusters_20_layers = self.Clusters_20_layers.append(clusters)
                 self.Clusters_16_layers = self.Clusters_16_layers.append(clusters)
@@ -138,7 +144,7 @@ class MainWindow(QMainWindow):
 
     def rate_action(self):
         if self.data_sets != '':
-            ce = self.Clusters
+            ce = self.Clusters_16_layers
             ce_red = filter_coincident_events(ce, self)
             start_time = ce_red.head(1)['Time'].values[0]
             end_time = ce_red.tail(1)['Time'].values[0]

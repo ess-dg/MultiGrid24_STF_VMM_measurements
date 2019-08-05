@@ -21,7 +21,7 @@ with warnings.catch_warnings():
 def import_data(file_path, window):
     h5_file = h5py.File(file_path, 'r')
     if window.sample_button.isChecked():
-        data = pd.DataFrame(h5_file['srs_hits'].value[:1000000])
+        data = pd.DataFrame(h5_file['srs_hits'].value[100:120])
     else:
         data = pd.DataFrame(h5_file['srs_hits'].value)
     return data
@@ -59,6 +59,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     start_time = int(first_row['srs_timestamp'])
     ADC = int(first_row['adc'])
     chip_id = int(first_row['chip_id'])
+
     Ch = int(first_row['channel'])
 
     # Start first cluster
@@ -86,7 +87,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
         if mgCh is None:
             mgCh = -10
         MG_channels['wCh'][i+1], MG_channels['gCh'][i+1] = -1, -1
-        if (Time - start_time) < time_window:
+        if (Time - start_time) < time_window: # selecting max ADC channel within a time window
             # Modify cluster
             xCh, xM, xADC, xMAX = chip_id_to_wire_or_grid[chip_id]
             data_dict[xADC][index] += ADC
@@ -106,6 +107,9 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
             xCh, xM, xADC, xMAX = chip_id_to_wire_or_grid[chip_id]
             data_dict[xADC][index] += ADC
             data_dict[xM][index] += 1
+            #print(chip_id)
+            #print(chip_id_to_wire_or_grid[chip_id])
+            #print(xCh, xM)
             if ADC > gw_ADC_max[xMAX]:
                 gw_ADC_max[xMAX] = ADC
                 data_dict[xCh][index] = mgCh
@@ -117,7 +121,11 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
         data_dict[key] = data_dict[key][0:index]
     df_clustered = pd.DataFrame(data_dict)
     # Append vector to raw dataframe with MG channels
+    #print("BEFORE")
+    #print(df_raw)
     df_raw = df_raw.join(pd.DataFrame(MG_channels))
+    #print("AFTER")
+    #print(df_raw)
     #print(df_raw)
     #print(df_clustered)
     # print(df_raw['chip_id'])
@@ -227,8 +235,8 @@ def mkdir_p(mypath):
 def get_VMM_to_MG24_mapping():
     # Import mapping
     dir_name = os.path.dirname(__file__)
-    #path_mapping = os.path.join(dir_name, '../Tables/Isabelle_MG_to_VMM_Mapping.xlsx')
-    path_mapping = os.path.join(dir_name, '../Tables/MG_to_VMM_Mapping_old.xlsx')
+    path_mapping = os.path.join(dir_name, '../Tables/New_Isabelle_MG_to_VMM_Mapping.xlsx')
+    #path_mapping = os.path.join(dir_name, '../Tables/MG_to_VMM_Mapping_old.xlsx')
     mapping_matrix = pd.read_excel(path_mapping).values
     #print(mapping_matrix)
     # Store in convenient format
