@@ -34,6 +34,7 @@ def import_data(file_path, window):
 def cluster_data(df_raw, window, file_nbr, file_nbrs):
     # Inititate parameters
     time_window = float(window.time_window.text())  # [TDC Channels]
+
     # Initate data vectors
     size = df_raw.shape[0]
     data_dict = {'wCh': np.zeros([size], dtype=int),
@@ -59,7 +60,6 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     start_time = int(first_row['srs_timestamp'])
     ADC = int(first_row['adc'])
     chip_id = int(first_row['chip_id'])
-
     Ch = int(first_row['channel'])
 
     # Start first cluster
@@ -129,6 +129,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     #print(df_raw)
     #print(df_clustered)
     # print(df_raw['chip_id'])
+
     """
     threes = 0
     for i, chip in enumerate(df_raw['chip_id']):
@@ -137,7 +138,9 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
             print(df_raw['channel'][i])
     print(threes)
     """
+
     return df_clustered, df_raw
+
 
 # =============================================================================
 # SAVE DATA
@@ -235,13 +238,17 @@ def mkdir_p(mypath):
 def get_VMM_to_MG24_mapping():
     # Import mapping
     dir_name = os.path.dirname(__file__)
-    path_mapping = os.path.join(dir_name, '../Tables/New_Isabelle_MG_to_VMM_Mapping.xlsx')
+    #path_mapping = os.path.join(dir_name, '../Tables/Latest_Isabelle_MG_to_VMM_Mapping.xlsx')
     #path_mapping = os.path.join(dir_name, '../Tables/MG_to_VMM_Mapping_old.xlsx')
+    path_mapping = os.path.join(dir_name, '../Tables/another_MG_to_VMM_Mapping_16_flipped.xlsx')
     mapping_matrix = pd.read_excel(path_mapping).values
     #print(mapping_matrix)
     # Store in convenient format
     VMM_ch_to_MG24_ch = np.empty((6, 80), dtype='object')
     for row in mapping_matrix:
+        print("row1 first", row)
         VMM_ch_to_MG24_ch[row[1]][row[2]] = row[5]
-    #print(VMM_ch_to_MG24_ch)
+        print("row1", VMM_ch_to_MG24_ch[row[1]])
+        print("row5", VMM_ch_to_MG24_ch[row[1]][row[2]])
+    print(VMM_ch_to_MG24_ch)
     return VMM_ch_to_MG24_ch
