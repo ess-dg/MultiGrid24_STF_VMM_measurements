@@ -39,7 +39,7 @@ def Coincidences_2D_plot(window):
     plt.colorbar()
     """
     # for 16 layers
-    plt.subplot(1, 2, 1)
+    plt.subplot(1, 1, 1)
     #plt.subplot(1,2,2)
     plt.title('16 layers')
     plt.hist2d(clusters_16.wCh, clusters_16.gCh, bins=[64, 12],

@@ -240,15 +240,13 @@ def get_VMM_to_MG24_mapping():
     dir_name = os.path.dirname(__file__)
     #path_mapping = os.path.join(dir_name, '../Tables/Latest_Isabelle_MG_to_VMM_Mapping.xlsx')
     #path_mapping = os.path.join(dir_name, '../Tables/MG_to_VMM_Mapping_old.xlsx')
-    path_mapping = os.path.join(dir_name, '../Tables/another_MG_to_VMM_Mapping_16_flipped.xlsx')
+    #path_mapping = os.path.join(dir_name, '../Tables/MG_to_VMM_Mapping_16_flipped.xlsx')
+    path_mapping = os.path.join(dir_name, '../Tables/new_THE_MG_to_VMM_Mapping.xlsx')
     mapping_matrix = pd.read_excel(path_mapping).values
     #print(mapping_matrix)
     # Store in convenient format
     VMM_ch_to_MG24_ch = np.empty((6, 80), dtype='object')
     for row in mapping_matrix:
-        print("row1 first", row)
         VMM_ch_to_MG24_ch[row[1]][row[2]] = row[5]
-        print("row1", VMM_ch_to_MG24_ch[row[1]])
-        print("row5", VMM_ch_to_MG24_ch[row[1]][row[2]])
-    print(VMM_ch_to_MG24_ch)
+    #print(VMM_ch_to_MG24_ch)
     return VMM_ch_to_MG24_ch

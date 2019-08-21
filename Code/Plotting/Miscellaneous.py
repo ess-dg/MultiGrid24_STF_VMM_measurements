@@ -36,7 +36,7 @@ def timestamp_plot(window):
     plt.grid(True, which='minor', linestyle='--', zorder=0)
     """
     # for 16 layers
-    plt.subplot(1, 2, 2)
+    plt.subplot(1, 1, 1)
     plt.title('16 layers')
     plt.plot(df_16.srs_timestamp, color='black', zorder=5)
     plt.title('Timestamp vs event number -- 16 layers')
@@ -60,7 +60,7 @@ def chip_channels_plot(window):
         plt.grid(True, which='minor', linestyle='--', zorder=0)
         plt.yscale('log')
         plt.xticks(np.arange(0, 65, 10))
-        plt.hist(events.channel, bins=65, range=[-0.5, 65.5],
+        plt.hist(events.channel, align="left", bins=65, range=[0, 65],
                  color='lightgrey', ec='black', zorder=5)
 
     # Import data before any clustering or mapping
@@ -82,5 +82,6 @@ def chip_channels_plot(window):
         events_VMM_16 = clusters_16[clusters_16.chip_id == VMM]
         plt.subplot(2, 2, i+1)
         chip_ch_plot_bus(events_VMM_16)
-    plt.tight_layout()
+    #plt.tight_layout()
+    plt.subplots_adjust(left=0.07, right=0.98, top=0.88, bottom=0.09, wspace=0.25, hspace=0.35)
     return fig

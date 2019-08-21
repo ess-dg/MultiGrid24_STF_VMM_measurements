@@ -24,8 +24,8 @@ def PHS_1D_VMM_plot(window):
         plt.grid(True, which='minor', linestyle='--', zorder=0)
         plt.yscale('log')
         plt.hist(events.adc, bins=number_bins,
-                 range=[0, 1050], histtype='step',
-                 color='black', zorder=5)
+                 range=[0, 1050], histtype='stepfilled',
+                 facecolor='lightgrey', ec='black', zorder=5)
     # Declare parameters
     VMM_order_20 = [2, 3, 4, 5]
     VMM_order_16 = [2, 3, 4, 5]
@@ -63,7 +63,6 @@ def PHS_1D_VMM_plot(window):
     plt.tight_layout()
     return fig
 
-
 # ============================================================================
 # PHS (1D) - MG
 # ============================================================================
@@ -79,12 +78,12 @@ def PHS_1D_MG_plot(window):
         plt.grid(True, which='minor', linestyle='--', zorder=0)
         plt.yscale('log')
         plt.hist(events[events[typeCh] >= 0].adc, bins=number_bins,
-                 range=[0, 1050], histtype='step',
-                 color='black', zorder=5)
+                 range=[0, 1050], histtype='stepfilled', ec='black',
+                 facecolor='lightgrey', zorder=5)
 
     # Declare parameters
     number_bins = int(window.phsBins.text())
-    typeChs = ['wCh', 'gCh']
+    typeChs = ['gCh', 'wCh']
     grids_or_wires = {'wCh': 'Wires', 'gCh': 'Grids'}
 
     # Import data
@@ -97,8 +96,8 @@ def PHS_1D_MG_plot(window):
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (1D)\n(%s, ...)' % window.data_sets.splitlines()[0]
-    fig.suptitle(title, x=0.5, y=1.03)
-    fig.set_figheight(4)
+    fig.suptitle(title, x=0.5, y=0.98)
+    fig.set_figheight(4.5)
     fig.set_figwidth(10)
     # Plot figure
     """
@@ -111,10 +110,11 @@ def PHS_1D_MG_plot(window):
     """
     # for 16 layers
     for i, typeCh in enumerate(typeChs):
-        plt.subplot(2, 2, i+3)
-        sub_title = "%s -- 16 layers" % typeCh
+        plt.subplot(1, 2, i+1)
+        sub_title = "%s -- 16 layers" % grids_or_wires[typeCh]
         PHS_1D_plot_bus(clusters_16, typeCh, sub_title, number_bins)
-    plt.tight_layout()
+    #plt.tight_layout()
+    plt.subplots_adjust(left=0.1, right=0.95, top=0.85, bottom=None, wspace=0.25, hspace=None)
 
     return fig
 
@@ -246,11 +246,11 @@ def PHS_2D_MG_plot(window):
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (2D) - MG\n(%s, ...)' % window.data_sets.splitlines()[0]
-    fig.suptitle(title, x=0.5, y=1.03)
+    fig.suptitle(title, x=0.5, y=0.99)
     vmin = None# 1
     vmax_20 = None #clusters_20.shape[0] // 1000 + 100
     vmax_16 = None #clusters_16.shape[0] // 1000 + 100
-    fig.set_figheight(4)
+    fig.set_figheight(4.5)
     fig.set_figwidth(10)
     # Plot figure
     """
@@ -273,10 +273,11 @@ def PHS_2D_MG_plot(window):
             events_red_16 = get_wire_events(clusters_16, window)
         else:
             events_red_16 = get_grid_events(clusters_16, window)
-        plt.subplot(2, 2, i+3)
+        plt.subplot(1, 2, i+1)
         sub_title = 'PHS: %s -- 16 layers' % grids_or_wires[typeCh]
         PHS_2D_plot_bus(events_red_16, typeCh, limit, bins, sub_title, vmin, vmax_16)
-    plt.tight_layout()
+    #plt.tight_layout()
+    plt.subplots_adjust(left=0.1, right=0.98, top=0.83, bottom=0.12, wspace=0.25, hspace=None)
     return fig
 
 
@@ -292,11 +293,11 @@ def PHS_Individual_plot(window):
     events_16 = filter_events(df_16, window)
     #events_20 = filter_events(df_20, window)
     # Declare parameters
-    events_vec = [events_16, events_20]
-    detectors = ['16_layers', '20_layers']
-    layers_vec = [16, 20]
+    events_vec = [events_16]#[events_16, events_20]
+    detectors = ['16_layers']#['16_layers', '20_layers']
+    layers_vec = [16]#[16, 20]
     dir_name = os.path.dirname(__file__)
-    folder_path = os.path.join(dir_name, '../../Results/PHS/')
+    folder_path = os.path.join(dir_name, '../../Results/PHS')
     number_bins = int(window.phsBins.text())
     # Save all PHS
     for events, detector, layers in zip(events_vec, detectors, layers_vec):
@@ -336,3 +337,113 @@ def PHS_Individual_plot(window):
             output_path = '%s/%s/Grids/Channel_%d.pdf' % (folder_path, detector, gCh)
             fig.savefig(output_path, bbox_inches='tight')
             plt.close()
+
+def PHS_Individual_Channel_plot(window, channel):
+    # Import data
+    df_16 = window.Events_16_layers
+    # Intial filter
+    events_16 = filter_events(df_16, window)
+    number_bins = int(window.phsBins.text())
+    # Get ADC values
+    if window.ind_gCh.isChecked():
+        adcs = events_16[events_16.gCh == channel]['adc']
+        w_or_g = 'grid'
+    elif window.ind_wCh.isChecked():
+        adcs = events_16[events_16.wCh == channel]['adc']
+        w_or_g = 'wire'
+    # Plot
+    fig = plt.figure()
+    plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+             facecolor='lightgrey', ec='black', zorder=5)
+    plt.grid(True, which='major', zorder=0)
+    plt.grid(True, which='minor', linestyle='--', zorder=0)
+    plt.xlabel('Collected charge [ADC channels]')
+    plt.ylabel('Counts')
+    plt.title('PHS %s channel %d\nData set: %s' % (w_or_g, channel, window.data_sets))
+
+    return fig
+
+def PHS_cluster_plot(window):
+    # Import data
+    df_16 = window.Clusters_16_layers
+    # Initial filter
+    clusters_16 = filter_coincident_events(df_16, window)
+    number_bins = int(window.phsBins.text())
+    # Prepare figure
+    fig = plt.figure()
+    title = 'PHS clustered (1D)\n(%s, ...)' % window.data_sets.splitlines()[0]
+    fig.suptitle(title, x=0.5, y=0.98)
+    fig.set_figheight(4.5)
+    fig.set_figwidth(10)
+    # Plot figure
+    plt.subplot(1, 2, 1)
+    adcs_16 = clusters_16['gADC']
+    plt.xlabel('Collected charge [ADC channels]')
+    plt.ylabel('Counts')
+    plt.grid(True, which='major', zorder=0)
+    plt.grid(True, which='minor', linestyle='--', zorder=0)
+    plt.yscale('log')
+    plt.hist(adcs_16, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+             facecolor='lightblue', ec='black', zorder=5)
+    plt.title("PHS grid channels")
+
+    plt.subplot(1, 2, 2)
+    adcs_16 = clusters_16['wADC']
+    plt.xlabel('Collected charge [ADC channels]')
+    plt.ylabel('Counts')
+    plt.grid(True, which='major', zorder=0)
+    plt.grid(True, which='minor', linestyle='--', zorder=0)
+    plt.yscale('log')
+    plt.hist(adcs_16, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+            facecolor='lightblue', ec='black', zorder=5)
+    plt.title("PHS wire channels")
+
+    #plt.tight_layout()
+    plt.subplots_adjust(left=0.1, right=0.93, top=0.83, bottom=0.12, wspace=0.25, hspace=None)
+    return fig
+
+def PHS_1D_overlay_plot(window):
+    def PHS_1D_overlay_plot_bus(clusters_16, typeCh, sub_title, number_bins, events_16):
+        # Plot
+        plt.title(sub_title)
+        plt.xlabel('Collected charge [ADC channels]')
+        plt.ylabel('Counts')
+        plt.grid(True, which='major', zorder=0)
+        plt.grid(True, which='minor', linestyle='--', zorder=0)
+        plt.yscale('log')
+
+        if typeCh == 'gCh':
+            adcs_clusters_16 = clusters_16['gADC']
+        elif typeCh == 'wCh':
+            adcs_clusters_16 = clusters_16['wADC']
+        plt.hist(events_16[events_16[typeCh] >= 0].adc, bins=number_bins,
+                 range=[0, 1050], histtype='stepfilled', ec='black',
+                 facecolor='lightgrey', zorder=5, label='raw')
+        plt.hist(adcs_clusters_16, bins=number_bins,
+                 range=[0, 1050], histtype='stepfilled', ec='black',
+                 facecolor='lightblue', alpha=0.5, zorder=5, label='clustered')
+        plt.legend()
+
+    # Import data
+    raw_16 = window.Events_16_layers
+    clustered_16 = window.Clusters_16_layers
+    # Apply filters
+    events_16 = filter_events(raw_16, window)
+    clusters_16 = filter_coincident_events(clustered_16, window)
+    number_bins = int(window.phsBins.text())
+    typeChs = ['gCh', 'wCh']
+    grids_or_wires = {'wCh': 'Wires', 'gCh': 'Grids'}
+    # Prepare figure
+    fig = plt.figure()
+    title = 'PHS overlay (1D)\n(%s, ...)' % window.data_sets.splitlines()[0]
+    fig.suptitle(title, x=0.5, y=0.98)
+    fig.set_figheight(4.5)
+    fig.set_figwidth(10)
+    # Plot figure
+    for i, typeCh in enumerate(typeChs):
+        plt.subplot(1, 2, i+1)
+        sub_title = "%s -- 16 layers" % grids_or_wires[typeCh]
+        PHS_1D_overlay_plot_bus(clusters_16, typeCh, sub_title, number_bins, events_16)
+
+    plt.subplots_adjust(left=0.1, right=0.93, top=0.83, bottom=0.12, wspace=0.25, hspace=None)
+    return fig

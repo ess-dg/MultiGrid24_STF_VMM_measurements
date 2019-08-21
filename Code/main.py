@@ -10,7 +10,9 @@ import time
 
 from cluster import import_data, cluster_data, save_data, load_data
 from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
-                          PHS_2D_MG_plot, PHS_Individual_plot)
+                          PHS_2D_MG_plot, PHS_Individual_plot,
+                          PHS_Individual_Channel_plot, PHS_cluster_plot,
+                          PHS_1D_overlay_plot)
 from Plotting.Coincidences import Coincidences_2D_plot, Coincidences_3D_plot
 from Plotting.Miscellaneous import timestamp_plot, chip_channels_plot
 from Plotting.HelperFunctions import filter_coincident_events
@@ -125,8 +127,23 @@ class MainWindow(QMainWindow):
             fig.show()
 
     def PHS_Individual_action(self):
-            if self.data_sets != '':
-                PHS_Individual_plot(self)
+        if self.data_sets != '':
+            if self.ind_gCh.isChecked() or self.ind_wCh.isChecked():
+                channel = self.ind_channel.value()
+                fig = PHS_Individual_Channel_plot(self, channel)
+                fig.show()
+            else:
+                fig = PHS_Individual_plot(self)
+
+    def PHS_cluster_action(self):
+        if self.data_sets != '':
+            fig = PHS_cluster_plot(self)
+            fig.show()
+
+    def PHS_overlay_action(self):
+        if self.data_sets != '':
+            fig = PHS_1D_overlay_plot(self)
+            fig.show()
 
     def Coincidences_2D_action(self):
         if self.data_sets != '':
@@ -173,6 +190,8 @@ class MainWindow(QMainWindow):
         self.PHS_1D_button.clicked.connect(self.PHS_1D_action)
         self.PHS_2D_button.clicked.connect(self.PHS_2D_action)
         self.PHS_Individual_button.clicked.connect(self.PHS_Individual_action)
+        self.PHS_cluster_button.clicked.connect(self.PHS_cluster_action)
+        self.PHS_overlay_button.clicked.connect(self.PHS_overlay_action)
         # Coincidences
         self.Coincidences_2D_button.clicked.connect(self.Coincidences_2D_action)
         self.Coincidences_3D_button.clicked.connect(self.Coincidences_3D_action)
@@ -183,9 +202,26 @@ class MainWindow(QMainWindow):
         self.toogle_VMM_MG()
         # Help
         self.helpbutton.clicked.connect(self.help_action)
-        self.helpbutton.setStyleSheet("background-color:rgb(255,70,10)")
+        # Individual channels
+        self.toggle_ind_channels()
 
-
+        # Styles and colours:
+        self.helpbutton.setStyleSheet("background-color:hsv(0,120,230);border:2px solid hsv(0,120,210)")
+        self.line.setStyleSheet("background-color:gray")
+        self.line_2.setStyleSheet("background-color:gray")
+        self.line_7.setStyleSheet("background-color:gray")
+        self.line_5.setStyleSheet("background-color:gray")
+        self.line_8.setStyleSheet("background-color:gray")
+        self.ind_gCh.setStyleSheet("background-color:hsv(240, 10, 220)")
+        self.ind_wCh.setStyleSheet("background-color:hsv(240, 10, 220)")
+        self.ind_channel.setStyleSheet("background-color:hsv(240, 10, 220)")
+        self.PHS_Individual_button.setStyleSheet("background-color:hsv(240,10,220);border:2px solid hsv(240,10,200)")
+        self.PHS_1D_button.setStyleSheet("background-color:hsv(190,10,220);border:2px solid hsv(190,10,200)")
+        self.PHS_2D_button.setStyleSheet("background-color:hsv(190,10,220);border:2px solid hsv(190,10,200)")
+        self.MG.setStyleSheet("background-color:hsv(190,10,220)")
+        self.VMM.setStyleSheet("background-color:hsv(190,10,220)")
+        self.PHS_cluster_button.setStyleSheet("background-color:hsv(290,10,220);border:2px solid hsv(290,10,200)")
+        self.PHS_overlay_button.setStyleSheet("background-color:hsv(160,10,220);border:2px solid hsv(160,10,200)")
 
     def refresh_window(self):
         self.update()
@@ -216,8 +252,11 @@ class MainWindow(QMainWindow):
         self.VMM.toggled.connect(
             lambda checked: checked and self.MG.setChecked(False))
 
-
-
+    def toggle_ind_channels(self):
+        self.ind_wCh.toggled.connect(
+            lambda checked: checked and self.ind_gCh.setChecked(False))
+        self.ind_gCh.toggled.connect(
+            lambda checked: checked and self.ind_wCh.setChecked(False))
 
 
 # =============================================================================
