@@ -40,7 +40,7 @@ def PHS_1D_VMM_plot(window):
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (1D)\n(%s, ...)' % window.data_sets.splitlines()[0]
-    fig.suptitle(title, x=0.5, y=1.03)
+    fig.suptitle(title, x=0.5, y=0.98)
     fig.set_figheight(8)
     fig.set_figwidth(10)
     # Plot figure
@@ -60,7 +60,8 @@ def PHS_1D_VMM_plot(window):
         plt.subplot(2, 2, i+1)
         sub_title = 'VMM: %s' % VMM + " -- 16 layers"
         PHS_1D_plot_bus(events_VMM_16, sub_title, number_bins)
-    plt.tight_layout()
+    #plt.tight_layout()
+    plt.subplots_adjust(left=0.1, right=0.95, top=0.87, bottom=0.08, wspace=0.25, hspace=0.33)
     return fig
 
 # ============================================================================
@@ -162,7 +163,7 @@ def PHS_2D_VMM_plot(window):
     # Prepare figure
     fig = plt.figure()
     title = 'PHS (2D) - VMM\n(%s, ...)' % window.data_sets.splitlines()[0]
-    fig.suptitle(title, x=0.5, y=1.03)
+    fig.suptitle(title, x=0.5, y=0.99)
     vmin = 1
     #vmax_20 = clusters_20.shape[0] // 1000 + 100
     vmax_16 = clusters_16.shape[0] // 1000 + 100
@@ -184,7 +185,8 @@ def PHS_2D_VMM_plot(window):
         plt.subplot(2, 2, i+1)
         sub_title = 'VMM: %s -- 16 layers' % VMM
         PHS_2D_plot_bus(events_VMM_16, VMM, limit, bins, sub_title, vmin, vmax_16)
-    plt.tight_layout()
+    #plt.tight_layout()
+    plt.subplots_adjust(left=0.1, right=0.95, top=0.89, bottom=0.08, wspace=0.25, hspace=0.33)
     return fig
 
 # =============================================================================
@@ -233,11 +235,11 @@ def PHS_2D_MG_plot(window):
     #df_20 = window.Events_20_layers
     df_16 = window.Events_16_layers
     # Declare parameters
-    typeChs = ['wCh', 'gCh']
-    limits_20 = [[-0.5, 78.5], [-0.5, 11.5]]
-    bins_20 = [79, 12]
-    limits_16 = [[-0.5, 62.5], [-0.5, 11.5]]
-    bins_16 = [63, 12]
+    typeChs = ['gCh', 'wCh']
+    limits_20 = [[-0.5, 11.5], [-0.5, 78.5]]
+    bins_20 = [12, 79]
+    limits_16 = [[-0.5, 11.5], [-0.5, 62.5]]
+    bins_16 = [12, 63]
     grids_or_wires = {'wCh': 'Wires', 'gCh': 'Grids'}
     # Initial filter
     #clusters_20 = filter_events(df_20, window)

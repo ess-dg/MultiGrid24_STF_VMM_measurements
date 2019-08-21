@@ -83,5 +83,5 @@ def chip_channels_plot(window):
         plt.subplot(2, 2, i+1)
         chip_ch_plot_bus(events_VMM_16)
     #plt.tight_layout()
-    plt.subplots_adjust(left=0.07, right=0.98, top=0.88, bottom=0.09, wspace=0.25, hspace=0.35)
+    plt.subplots_adjust(left=0.1, right=0.98, top=0.88, bottom=0.09, wspace=0.25, hspace=0.35)
     return fig
