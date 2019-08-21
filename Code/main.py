@@ -118,9 +118,15 @@ class MainWindow(QMainWindow):
                 else:
                     fig = PHS_1D_MG_plot(self)
             elif self.PHS_clustered.isChecked():
-                fig = PHS_cluster_plot(self)
+                if self.VMM.isChecked():
+                    fig = PHS_1D_VMM_plot(self)
+                else:
+                    fig = PHS_cluster_plot(self)
             elif self.PHS_overlay.isChecked():
-                fig = PHS_1D_overlay_plot(self)
+                if self.VMM.isChecked():
+                    fig = PHS_1D_VMM_plot(self)
+                else:
+                    fig = PHS_1D_overlay_plot(self)
             fig.show()
 
     def PHS_2D_action(self):
@@ -185,8 +191,6 @@ class MainWindow(QMainWindow):
         self.PHS_1D_button.clicked.connect(self.PHS_1D_action)
         self.PHS_2D_button.clicked.connect(self.PHS_2D_action)
         self.PHS_Individual_button.clicked.connect(self.PHS_Individual_action)
-        self.PHS_cluster_button.clicked.connect(self.PHS_cluster_action)
-        self.PHS_overlay_button.clicked.connect(self.PHS_overlay_action)
         # Coincidences
         self.Coincidences_2D_button.clicked.connect(self.Coincidences_2D_action)
         self.Coincidences_3D_button.clicked.connect(self.Coincidences_3D_action)
@@ -216,8 +220,6 @@ class MainWindow(QMainWindow):
         self.PHS_2D_button.setStyleSheet("background-color:hsv(190,10,220);border:2px solid hsv(190,10,200)")
         self.MG.setStyleSheet("background-color:hsv(190,10,220)")
         self.VMM.setStyleSheet("background-color:hsv(190,10,220)")
-        self.PHS_cluster_button.setStyleSheet("background-color:hsv(290,10,220);border:2px solid hsv(290,10,200)")
-        self.PHS_overlay_button.setStyleSheet("background-color:hsv(160,10,220);border:2px solid hsv(160,10,200)")
 
     def refresh_window(self):
         self.update()

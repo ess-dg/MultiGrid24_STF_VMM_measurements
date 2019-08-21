@@ -438,6 +438,8 @@ def PHS_Individual_Channel_plot(window, channel):
     events_16 = filter_events(df_events_16, window)
     clusters_16 = filter_coincident_events(df_clusters_16, window)
     number_bins = int(window.phsBins.text())
+    # Plot
+    fig = plt.figure()
     # Get ADC values
     if window.PHS_raw.isChecked():
         if window.ind_gCh.isChecked():
@@ -446,6 +448,8 @@ def PHS_Individual_Channel_plot(window, channel):
         elif window.ind_wCh.isChecked():
             adcs = events_16[events_16.wCh == channel]['adc']
             w_or_g = 'wire'
+        plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+                facecolor='lightgrey', ec='black', zorder=5)
     elif window.PHS_clustered.isChecked():
         if window.ind_gCh.isChecked():
             adcs = clusters_16[clusters_16.gCh == channel]['gADC']
@@ -453,6 +457,8 @@ def PHS_Individual_Channel_plot(window, channel):
         elif window.ind_wCh.isChecked():
             adcs = clusters_16[clusters_16.wCh == channel]['wADC']
             w_or_g = 'wire'
+            plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+                    facecolor='lightblue', ec='black', zorder=5)
     elif window.PHS_overlay.isChecked():
         if window.ind_gCh.isChecked():
             adcs_events = events_16[events_16.gCh == channel]['adc']
@@ -462,17 +468,11 @@ def PHS_Individual_Channel_plot(window, channel):
             adcs_events = events_16[events_16.wCh == channel]['adc']
             adcs_clusters = clusters_16[clusters_16.wCh == channel]['wADC']
             w_or_g = 'wire'
+            plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+                     facecolor='lightgrey', ec='black', zorder=5)
+            plt.hist(adcs_clusters, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+                     facecolor='lightblue', ec='black', alpha=0.5, zorder=5)
 
-    # Plot
-    fig = plt.figure()
-    if window.PHS_overlay.isChecked():
-        plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                 facecolor='lightgrey', ec='black', zorder=5)
-        plt.hist(adcs_clusters, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                 facecolor='lightblue', ec='black', alpha=0.5, zorder=5)
-    else:
-        plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                facecolor='lightgrey', ec='black', zorder=5)
     plt.grid(True, which='major', zorder=0)
     plt.grid(True, which='minor', linestyle='--', zorder=0)
     plt.xlabel('Collected charge [ADC channels]')
