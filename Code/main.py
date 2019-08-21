@@ -112,10 +112,15 @@ class MainWindow(QMainWindow):
 
     def PHS_1D_action(self):
         if self.data_sets != '':
-            if self.VMM.isChecked():
-                fig = PHS_1D_VMM_plot(self)
-            else:
-                fig = PHS_1D_MG_plot(self)
+            if self.PHS_raw.isChecked():
+                if self.VMM.isChecked():
+                    fig = PHS_1D_VMM_plot(self)
+                else:
+                    fig = PHS_1D_MG_plot(self)
+            elif self.PHS_clustered.isChecked():
+                fig = PHS_cluster_plot(self)
+            elif self.PHS_overlay.isChecked():
+                fig = PHS_1D_overlay_plot(self)
             fig.show()
 
     def PHS_2D_action(self):
@@ -134,16 +139,6 @@ class MainWindow(QMainWindow):
                 fig.show()
             else:
                 fig = PHS_Individual_plot(self)
-
-    def PHS_cluster_action(self):
-        if self.data_sets != '':
-            fig = PHS_cluster_plot(self)
-            fig.show()
-
-    def PHS_overlay_action(self):
-        if self.data_sets != '':
-            fig = PHS_1D_overlay_plot(self)
-            fig.show()
 
     def Coincidences_2D_action(self):
         if self.data_sets != '':
@@ -204,6 +199,7 @@ class MainWindow(QMainWindow):
         self.helpbutton.clicked.connect(self.help_action)
         # Individual channels
         self.toggle_ind_channels()
+        self.toggle_PHS_choice()
 
         # Styles and colours:
         self.helpbutton.setStyleSheet("background-color:hsv(0,120,230);border:2px solid hsv(0,120,210)")
@@ -258,6 +254,13 @@ class MainWindow(QMainWindow):
         self.ind_gCh.toggled.connect(
             lambda checked: checked and self.ind_wCh.setChecked(False))
 
+    def toggle_PHS_choice(self):
+        self.PHS_raw.toggled.connect(
+            lambda checked: checked and (self.PHS_clustered.setChecked(False), self.PHS_overlay.setChecked(False)))
+        self.PHS_clustered.toggled.connect(
+            lambda checked: checked and (self.PHS_raw.setChecked(False), self.PHS_overlay.setChecked(False)))
+        self.PHS_overlay.toggled.connect(
+            lambda checked: checked and (self.PHS_raw.setChecked(False), self.PHS_clustered.setChecked(False)))
 
 # =============================================================================
 # Start GUI

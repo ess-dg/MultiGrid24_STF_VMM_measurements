@@ -1277,8 +1277,8 @@
    <widget class="QPushButton" name="PHS_cluster_button">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>260</y>
+      <x>500</x>
+      <y>290</y>
       <width>101</width>
       <height>41</height>
      </rect>
@@ -1290,14 +1290,65 @@
    <widget class="QPushButton" name="PHS_overlay_button">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>300</y>
+      <x>590</x>
+      <y>290</y>
       <width>101</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string>PHS both</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="PHS_raw">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>260</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>raw</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="PHS_overlay">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>300</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>overlay</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="PHS_clustered">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>280</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>clustered</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
