@@ -397,13 +397,14 @@ def PHS_Individual_plot(window):
                 # Plot
                 fig = plt.figure()
                 plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                         facecolor='lightgrey', ec='black', zorder=5)
+                         facecolor='lightgrey', ec='black', zorder=5, label='raw')
                 plt.hist(adcs_clusters, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                         facecolor='lightblue', ec='black', alpha=0.5, zorder=5)
+                         facecolor='lightblue', ec='black', alpha=0.7, zorder=5, label='clustered')
                 plt.grid(True, which='major', zorder=0)
                 plt.grid(True, which='minor', linestyle='--', zorder=0)
                 plt.xlabel('Collected charge [ADC channels]')
                 plt.ylabel('Counts')
+                plt.legend()
                 plt.title('PHS wires - Channel %d\nData set: %s' % (wCh, window.data_sets))
                 # Save
                 output_path = '%s/%s/Wires_overlay/Channel_%d.pdf' % (folder_path, detector, wCh)
@@ -418,13 +419,14 @@ def PHS_Individual_plot(window):
                 # Plot
                 fig = plt.figure()
                 plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                         facecolor='lightgrey', ec='black', zorder=5)
+                         facecolor='lightgrey', ec='black', zorder=5, label='raw')
                 plt.hist(adcs_clusters, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                         facecolor='lightblue', ec='black', alpha=0.5, zorder=5)
+                         facecolor='lightblue', ec='black', alpha=0.7, zorder=5, label='clustered')
                 plt.grid(True, which='major', zorder=0)
                 plt.grid(True, which='minor', linestyle='--', zorder=0)
                 plt.xlabel('Collected charge [ADC channels]')
                 plt.ylabel('Counts')
+                plt.legend()
                 plt.title('PHS grids - Channel %d\nData set: %s' % (gCh, window.data_sets))
                 # Save
                 output_path = '%s/%s/Grids_overlay/Channel_%d.pdf' % (folder_path, detector, gCh)
@@ -459,8 +461,8 @@ def PHS_Individual_Channel_plot(window, channel):
         elif window.ind_wCh.isChecked():
             adcs = clusters_16[clusters_16.wCh == channel]['wADC']
             w_or_g = 'wire'
-            plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                    facecolor='lightblue', ec='black', zorder=5)
+        plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+                facecolor='lightblue', ec='black', zorder=5)
     elif window.PHS_overlay.isChecked():
         if window.ind_gCh.isChecked():
             adcs_events = events_16[events_16.gCh == channel]['adc']
@@ -470,15 +472,16 @@ def PHS_Individual_Channel_plot(window, channel):
             adcs_events = events_16[events_16.wCh == channel]['adc']
             adcs_clusters = clusters_16[clusters_16.wCh == channel]['wADC']
             w_or_g = 'wire'
-            plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                     facecolor='lightgrey', ec='black', zorder=5)
-            plt.hist(adcs_clusters, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-                     facecolor='lightblue', ec='black', alpha=0.5, zorder=5)
+        plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+                 facecolor='lightgrey', ec='black', zorder=5, label='raw')
+        plt.hist(adcs_clusters, bins=number_bins, range=[0, 1050], histtype='stepfilled',
+                 facecolor='lightblue', ec='black', alpha=0.7, zorder=5, label='clustered')
 
     plt.grid(True, which='major', zorder=0)
     plt.grid(True, which='minor', linestyle='--', zorder=0)
     plt.xlabel('Collected charge [ADC channels]')
     plt.ylabel('Counts')
+    plt.legend()
     plt.title('PHS %s channel %d\nData set: %s' % (w_or_g, channel, window.data_sets))
     return fig
 
@@ -503,7 +506,7 @@ def PHS_cluster_plot(window):
     plt.grid(True, which='minor', linestyle='--', zorder=0)
     plt.yscale('log')
     plt.hist(adcs_16, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-             facecolor='lightblue', ec='black', zorder=5)
+             facecolor='lightblue', ec='black', zorder=5, label='raw')
     plt.title("PHS grid channels")
 
     plt.subplot(1, 2, 2)
@@ -514,8 +517,9 @@ def PHS_cluster_plot(window):
     plt.grid(True, which='minor', linestyle='--', zorder=0)
     plt.yscale('log')
     plt.hist(adcs_16, bins=number_bins, range=[0, 1050], histtype='stepfilled',
-            facecolor='lightblue', ec='black', zorder=5)
+            facecolor='lightblue', ec='black', zorder=5, label='clustered')
     plt.title("PHS wire channels")
+    plt.legend()
 
     #plt.tight_layout()
     plt.subplots_adjust(left=0.1, right=0.93, top=0.83, bottom=0.12, wspace=0.25, hspace=None)
@@ -540,7 +544,7 @@ def PHS_1D_overlay_plot(window):
                  facecolor='lightgrey', zorder=5, label='raw')
         plt.hist(adcs_clusters_16, bins=number_bins,
                  range=[0, 1050], histtype='stepfilled', ec='black',
-                 facecolor='lightblue', alpha=0.5, zorder=5, label='clustered')
+                 facecolor='lightblue', alpha=0.7, zorder=5, label='clustered')
         plt.legend()
 
     # Import data
