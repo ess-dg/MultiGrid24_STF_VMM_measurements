@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import time
 
-from cluster import import_data, cluster_data, save_data, load_data
+from cluster import import_data, cluster_data
 from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
                           PHS_2D_MG_plot, PHS_Individual_plot,
                           PHS_Individual_Channel_plot, PHS_cluster_plot,
@@ -37,8 +37,6 @@ class MainWindow(QMainWindow):
         #self.Events_20_layers = pd.DataFrame()
         self.Events_16_layers = pd.DataFrame()
         #self.cluster_progress.close()
-        self.save_progress.close()
-        self.load_progress.close()
         self.VMM.setEnabled
         self.show()
         self.refresh_window()
@@ -185,8 +183,6 @@ class MainWindow(QMainWindow):
     def setup_buttons(self):
         # File handling
         self.cluster_button.clicked.connect(self.cluster_action)
-        self.save_button.clicked.connect(self.save_action)
-        self.load_button.clicked.connect(self.load_action)
         # PHS
         self.PHS_1D_button.clicked.connect(self.PHS_1D_action)
         self.PHS_2D_button.clicked.connect(self.PHS_2D_action)
