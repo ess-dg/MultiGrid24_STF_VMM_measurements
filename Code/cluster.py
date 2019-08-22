@@ -121,23 +121,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
         data_dict[key] = data_dict[key][0:index]
     df_clustered = pd.DataFrame(data_dict)
     # Append vector to raw dataframe with MG channels
-    #print("BEFORE")
-    #print(df_raw)
     df_raw = df_raw.join(pd.DataFrame(MG_channels))
-    #print("AFTER")
-    #print(df_raw)
-    #print(df_raw)
-    #print(df_clustered)
-    # print(df_raw['chip_id'])
-
-    """
-    threes = 0
-    for i, chip in enumerate(df_raw['chip_id']):
-        if chip == 5:
-            threes = threes + 1
-            print(df_raw['channel'][i])
-    print(threes)
-    """
 
     return df_clustered, df_raw
 
