@@ -85,3 +85,49 @@ def chip_channels_plot(window):
     #plt.tight_layout()
     plt.subplots_adjust(left=0.1, right=0.98, top=0.88, bottom=0.09, wspace=0.25, hspace=0.35)
     return fig
+
+def channel_rates(window):
+    events_16 = window.Events_16_layers
+    events_16 = filter_events(events_16, window)
+    start_time = events_16.head(1)['srs_timestamp'].values[0]
+    end_time = events_16.tail(1)['srs_timestamp'].values[0]
+
+    # plot
+    fig = plt.figure()
+    fig.set_figheight(5)
+    fig.set_figwidth(10)
+    plt.suptitle('Rates per channel \n%s)' % window.data_sets.splitlines()[0])
+    plt.subplot(1, 2, 1)
+    plt.xlabel('grid channel')
+    plt.ylabel('Count rate')
+    plt.grid(True, which='major', zorder=0)
+    plt.grid(True, which='minor', linestyle='--', zorder=0)
+    plt.title("Grid rates")
+    #print("Grid channel \t rate")
+    gChs = []
+    g_rates = []
+    for gCh in np.arange(0, 12, 1):
+        counts = len(events_16[events_16.gCh == gCh])
+        rate = counts/((end_time - start_time) * 1e-9)
+        gChs.append(gCh)
+        g_rates.append(rate)
+        #print(gCh, "\t", rate, "Hz")
+    plt.scatter(gChs, g_rates, zorder=2)
+    #print("Wire channel \t rate")
+    plt.subplot(1, 2, 2)
+    plt.xlabel('wire channel')
+    plt.ylabel('Count rate')
+    plt.grid(True, which='major', zorder=0)
+    plt.grid(True, which='minor', linestyle='--', zorder=0)
+    plt.title("Wire rates")
+    wChs = []
+    w_rates = []
+    for wCh in np.arange(0, 64, 1):
+        counts = len(events_16[events_16.wCh == wCh])
+        rate = counts/((end_time - start_time) * 1e-9)
+        wChs.append(wCh)
+        w_rates.append(rate)
+        #print(wCh, "\t", rate, "Hz")
+    plt.scatter(wChs, w_rates, zorder=2)
+    plt.subplots_adjust(left=0.1, right=0.98, top=0.86, bottom=0.09, wspace=0.25, hspace=0.35)
+    return fig

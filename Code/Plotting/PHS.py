@@ -351,8 +351,16 @@ def PHS_Individual_plot(window):
             for wCh in np.arange(0, layers*4, 1):
                 print('%s, Wires: %d/%d' % (detector, wCh, layers*4-1))
                 # Get ADC values
-                adcs = clusters[(clusters.wCh == wCh) & (window.wM_min.value() <= clusters.wM) & (clusters.wM <= window.wM_max.value()) & (clusters.gM >= 1) & (clusters.chip_id != 2)].adc
-                #adcs = clusters[clusters.wCh == wCh]['adc']
+                if window.wM_filter.isChecked():
+                    adcs = clusters[(clusters.wCh == wCh)
+                                    & (window.wM_min.value() <= clusters.wM)
+                                    & (clusters.wM <= window.wM_max.value())
+                                    & (clusters.gM >= window.gM_min.value())
+                                    & (clusters.gM <= window.gM_max.value())
+                                    & (clusters.chip_id != 2)].adc
+                else:
+                    adcs = clusters[(clusters.wCh == wCh)
+                                    & (clusters.chip_id != 2)].adc
                 # Plot
                 fig = plt.figure()
                 plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
@@ -370,8 +378,17 @@ def PHS_Individual_plot(window):
             for gCh in np.arange(0, 12, 1):
                 print('%s, Grids: %d/11' % (detector, gCh))
                 # Get ADC values
-                adcs = clusters[(clusters.gCh == gCh) & (window.gM_min.value() <= clusters.gM) & (clusters.gM <= window.gM_max.value()) & (clusters.wM >= 1) & (clusters.chip_id == 2)].adc
-                #adcs = clusters[clusters.gCh == gCh]['adc']
+                if window.gM_filter.isChecked():
+                    adcs = clusters[(clusters.gCh == gCh)
+                                    & (window.gM_min.value() <= clusters.gM)
+                                    & (clusters.gM <= window.gM_max.value())
+                                    & (clusters.wM >= window.wM_min.value())
+                                    & (clusters.wM <= window.wM_max.value())
+                                    & (clusters.chip_id == 2)].adc
+                else:
+                    adcs = clusters[(clusters.gCh == gCh)
+                                    & (clusters.chip_id == 2)].adc
+
                 # Plot
                 fig = plt.figure()
                 plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
@@ -394,8 +411,16 @@ def PHS_Individual_plot(window):
                 print('%s, Wires: %d/%d' % (detector, wCh, layers*4-1))
                 # Get ADC values
                 adcs_events = events[events.wCh == wCh]['adc']
-                #adcs_clusters = clusters[clusters.wCh == wCh]['adc']
-                adcs_clusters = clusters[(clusters.wCh == wCh) & (window.wM_min.value() <= clusters.wM) & (clusters.wM <= window.wM_max.value()) & (clusters.gM >= 1) & (clusters.chip_id != 2)].adc
+                if window.wM_filter.isChecked():
+                    adcs_clusters = clusters[(clusters.wCh == wCh)
+                                             & (window.wM_min.value() <= clusters.wM)
+                                             & (clusters.wM <= window.wM_max.value())
+                                             & (clusters.gM >= window.gM_min.value())
+                                             & (clusters.gM <= window.gM_max.value())
+                                             & (clusters.chip_id != 2)].adc
+                else:
+                    adcs_clusters = clusters[(clusters.wCh == wCh)
+                                             & (clusters.chip_id != 2)].adc
                 # Plot
                 fig = plt.figure()
                 plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
@@ -417,8 +442,16 @@ def PHS_Individual_plot(window):
                 print('%s, Grids: %d/11' % (detector, gCh))
                 # Get ADC values
                 adcs_events = events[events.gCh == gCh]['adc']
-                #adcs_clusters = clusters[clusters.gCh == gCh]['adc']
-                adcs_clusters = clusters[(clusters.gCh == gCh) & (window.gM_min.value() <= clusters.gM) & (clusters.gM <= window.gM_max.value()) & (clusters.wM >= 1) & (clusters.chip_id == 2)].adc
+                if window.gM_filter.isChecked():
+                    adcs_clusters = clusters[(clusters.gCh == gCh)
+                                             & (window.gM_min.value() <= clusters.gM)
+                                             & (clusters.gM <= window.gM_max.value())
+                                             & (clusters.wM >= window.wM_min.value())
+                                             & (clusters.wM <= window.wM_max.value())
+                                             & (clusters.chip_id == 2)].adc
+                else:
+                    adcs_clusters = clusters[(clusters.gCh == gCh)
+                                             & (clusters.chip_id == 2)].adc
                 # Plot
                 fig = plt.figure()
                 plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
@@ -458,22 +491,60 @@ def PHS_Individual_Channel_plot(window, channel):
                 facecolor='lightgrey', ec='black', zorder=5)
     elif window.PHS_clustered.isChecked():
         if window.ind_gCh.isChecked():
-            adcs = clusters_16[(clusters_16.gCh == channel) & (window.gM_min.value() <= clusters_16.gM) & (clusters_16.gM <= window.gM_max.value()) & (clusters_16.wM >= 1) & (clusters_16.chip_id == 2)].adc
             w_or_g = 'grid'
+            if window.gM_filter.isChecked():
+                adcs = clusters_16[(clusters_16.gCh == channel)
+                                   & (window.gM_min.value() <= clusters_16.gM)
+                                   & (clusters_16.gM <= window.gM_max.value())
+                                   & (clusters_16.wM >= window.wM_min.value())
+                                   & (clusters_16.wM <= window.wM_max.value())
+                                   & (clusters_16.chip_id == 2)].adc
+            else:
+                adcs = clusters_16[(clusters_16.gCh == channel)
+                                   & (clusters_16.chip_id == 2)].adc
         elif window.ind_wCh.isChecked():
-            adcs = clusters_16[(clusters_16.wCh == channel) & (window.wM_min.value() <= clusters_16.wM) & (clusters_16.wM <= window.wM_max.value()) & (clusters_16.gM >= 1) & (clusters_16.chip_id != 2)].adc
             w_or_g = 'wire'
+            if window.wM_filter.isChecked():
+                adcs = clusters_16[(clusters_16.wCh == channel)
+                                   & (window.wM_min.value() <= clusters_16.wM)
+                                   & (clusters_16.wM <= window.wM_max.value())
+                                   & (clusters_16.gM >= window.gM_min.value())
+                                   & (clusters_16.gM <= window.gM_max.value())
+                                   & (clusters_16.chip_id != 2)].adc
+            else:
+                adcs = clusters_16[(clusters_16.wCh == channel)
+                                   & (clusters_16.chip_id != 2)].adc
         plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
                 facecolor='lightblue', ec='black', zorder=5)
     elif window.PHS_overlay.isChecked():
         if window.ind_gCh.isChecked():
-            adcs_events = events_16[events_16.gCh == channel]['adc']
-            adcs_clusters = clusters_16[(clusters_16.gCh == channel) & (window.gM_min.value() <= clusters_16.gM) & (clusters_16.gM <= window.gM_max.value()) & (clusters_16.wM >= 1) & (clusters_16.chip_id == 2)].adc
             w_or_g = 'grid'
+            adcs_events = events_16[events_16.gCh == channel]['adc']
+            if window.gM_filter.isChecked():
+                adcs_clusters = clusters_16[(clusters_16.gCh == channel)
+                                            & (window.gM_min.value() <= clusters_16.gM)
+                                            & (clusters_16.gM <= window.gM_max.value())
+                                            & (clusters_16.wM >= window.wM_min.value())
+                                            & (clusters_16.wM <= window.wM_max.value())
+                                            & (clusters_16.chip_id == 2)].adc
+            else:
+                adcs_clusters = clusters_16[(clusters_16.gCh == channel)
+                                   & (clusters_16.chip_id == 2)].adc
+
         elif window.ind_wCh.isChecked():
-            adcs_events = events_16[events_16.wCh == channel]['adc']
-            adcs_clusters = clusters_16[(clusters_16.wCh == channel) & (window.wM_min.value() <= clusters_16.wM) & (clusters_16.wM <= window.wM_max.value()) & (clusters_16.gM >= 1) & (clusters_16.chip_id != 2)].adc
             w_or_g = 'wire'
+            adcs_events = events_16[events_16.wCh == channel]['adc']
+            if window.wM_filter.isChecked():
+                adcs_clusters = clusters_16[(clusters_16.wCh == channel)
+                                            & (window.wM_min.value() <= clusters_16.wM)
+                                            & (clusters_16.wM <= window.wM_max.value())
+                                            & (clusters_16.gM >= window.gM_min.value())
+                                            & (clusters_16.gM <= window.gM_max.value())
+                                            & (clusters_16.chip_id != 2)].adc
+            else:
+                adcs_clusters = clusters_16[(clusters_16.wCh == channel)
+                                            & (clusters_16.chip_id != 2)].adc
+
         plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
                  facecolor='lightgrey', ec='black', zorder=5, label='raw')
         plt.hist(adcs_clusters, bins=number_bins, range=[0, 1050], histtype='stepfilled',
@@ -500,7 +571,15 @@ def PHS_cluster_plot(window):
     fig.set_figwidth(10)
     # Plot figure
     plt.subplot(1, 2, 1)
-    adcs_16 = clusters_16[(window.gM_min.value() <= clusters_16.gM) & (clusters_16.gM <= window.gM_max.value()) & (clusters_16.wM >= 1) & (clusters_16.chip_id == 2)].adc
+    if window.gM_filter.isChecked():
+        adcs_16 = clusters_16[(window.gM_min.value() <= clusters_16.gM)
+                              & (clusters_16.gM <= window.gM_max.value())
+                              & (clusters_16.wM >= window.wM_min.value())
+                              & (clusters_16.wM <= window.wM_max.value())
+                              & (clusters_16.chip_id == 2)].adc
+    else:
+        adcs_16 = clusters_16[clusters_16.chip_id == 2].adc
+
     plt.xlabel('Collected charge [ADC channels]')
     plt.ylabel('Counts')
     plt.grid(True, which='major', zorder=0)
@@ -511,7 +590,14 @@ def PHS_cluster_plot(window):
     plt.title("PHS grid channels")
 
     plt.subplot(1, 2, 2)
-    adcs_16 = clusters_16[(window.wM_min.value() <= clusters_16.wM) & (clusters_16.wM <= window.wM_max.value()) & (clusters_16.gM >= 1) & (clusters_16.chip_id != 2)].adc
+    if window.wM_filter.isChecked():
+        adcs_16 = clusters_16[(window.wM_min.value() <= clusters_16.wM)
+                              & (clusters_16.wM <= window.wM_max.value())
+                              & (clusters_16.gM >= window.gM_min.value())
+                              & (clusters_16.gM <= window.gM_max.value())
+                              & (clusters_16.chip_id != 2)].adc
+    else:
+        adcs_16 = clusters_16[clusters_16.chip_id != 2].adc
     plt.xlabel('Collected charge [ADC channels]')
     plt.ylabel('Counts')
     plt.grid(True, which='major', zorder=0)
@@ -536,9 +622,23 @@ def PHS_1D_overlay_plot(window):
         #plt.yscale('log')
 
         if typeCh == 'gCh':
-            adcs_clusters_16 = clusters_16[(window.gM_min.value() <= clusters_16.gM) & (clusters_16.gM <= window.gM_max.value()) & (clusters_16.wM >= 1) & (clusters_16.chip_id == 2)].adc
+            if window.gM_filter.isChecked():
+                adcs_clusters_16 = clusters_16[(window.gM_min.value() <= clusters_16.gM)
+                                               & (clusters_16.gM <= window.gM_max.value())
+                                               & (clusters_16.wM >= window.wM_min.value())
+                                               & (clusters_16.wM <= window.wM_max.value())
+                                               & (clusters_16.chip_id == 2)].adc
+            else:
+                adcs_clusters_16 = clusters_16[clusters_16.chip_id == 2].adc
         elif typeCh == 'wCh':
-            adcs_clusters_16 = clusters_16[(window.wM_min.value() <= clusters_16.wM) & (clusters_16.wM <= window.wM_max.value()) & (clusters_16.gM >= 1) & (clusters_16.chip_id != 2)].adc
+            if window.wM_filter.isChecked():
+                adcs_clusters_16 = clusters_16[(window.wM_min.value() <= clusters_16.wM)
+                                               & (clusters_16.wM <= window.wM_max.value())
+                                               & (clusters_16.gM >= window.gM_min.value())
+                                               & (clusters_16.gM <= window.gM_max.value())
+                                               & (clusters_16.chip_id != 2)].adc
+            else:
+                adcs_clusters_16 = clusters_16[clusters_16.chip_id != 2].adc
         plt.hist(events_16[events_16[typeCh] >= 0].adc, bins=number_bins,
                  range=[0, 1050], histtype='stepfilled', ec='black',
                  facecolor='lightgrey', zorder=5, label='raw')

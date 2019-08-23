@@ -14,7 +14,7 @@ from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
                           PHS_Individual_Channel_plot, PHS_cluster_plot,
                           PHS_1D_overlay_plot)
 from Plotting.Coincidences import Coincidences_2D_plot, Coincidences_3D_plot
-from Plotting.Miscellaneous import timestamp_plot, chip_channels_plot
+from Plotting.Miscellaneous import timestamp_plot, chip_channels_plot, channel_rates
 from Plotting.HelperFunctions import filter_coincident_events
 from Plotting.HelpMessage import gethelp
 
@@ -165,7 +165,12 @@ class MainWindow(QMainWindow):
             start_time = ce_red.head(1)['Time'].values[0]
             end_time = ce_red.tail(1)['Time'].values[0]
             rate = ce_red.shape[0]/((end_time - start_time) * 1e-9)
-            print('Rate: %f Hz' % rate)
+            print('Total neutron rate: %f Hz' % rate)
+
+    def channel_rate_action(self):
+        if self.data_sets != '':
+            fig = channel_rates(self)
+            fig.show()
 
     def help_action(self):
         print("HELP!!!!")
@@ -193,6 +198,7 @@ class MainWindow(QMainWindow):
         # Miscellaneous
         self.timestamp_button.clicked.connect(self.timestamp_action)
         self.rate_button.clicked.connect(self.rate_action)
+        self.channel_rate_button.clicked.connect(self.channel_rate_action)
         self.chip_ch_button.clicked.connect(self.chip_channels_action)
         self.toogle_VMM_MG()
         # Help
