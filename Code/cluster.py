@@ -127,23 +127,6 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     df_raw = df_raw.join(pd.DataFrame({'wM': wMraw}))
     return df_clustered, df_raw
 
-def raw_ADC_summed(df_raw, window):
-    # Inititate parameters
-    time_window = float(window.time_window.text())  # [TDC Channels]
-    # Initate data vectors
-    size = df_raw.shape[0]
-    events_summed_adc_dict = {'ADC_sum': np.zeros([size], dtype=int)}
-    index = []
-    chip_ids = df_raw['chip_id'].values[0:].astype(np.int64)
-    for i, chip_id in enumerate(chip_ids):
-        if chip_id == 2:
-            index.append(i)
-    #print(index)
-
-    events_summed_adc = df_raw
-    return events_summed_adc
-
-
 # =============================================================================
 # Helper Functions
 # =============================================================================

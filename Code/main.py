@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import time
 
-from cluster import import_data, cluster_data, raw_ADC_summed
+from cluster import import_data, cluster_data
 from Plotting.PHS import (PHS_1D_VMM_plot, PHS_1D_MG_plot, PHS_2D_VMM_plot,
                           PHS_2D_MG_plot, PHS_Individual_plot,
                           PHS_Individual_Channel_plot, PHS_cluster_plot,
@@ -75,7 +75,6 @@ class MainWindow(QMainWindow):
                 print("CLUSTERS")
                 print(clusters)
                 print("length", len(clusters))
-                raw_ADC_summed(data, self)
                 self.measurement_time += self.get_duration(events)
                 #self.Clusters_20_layers = self.Clusters_20_layers.append(clusters)
                 self.Clusters_16_layers = self.Clusters_16_layers.append(clusters)
