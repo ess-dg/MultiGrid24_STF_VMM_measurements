@@ -21,7 +21,7 @@ with warnings.catch_warnings():
 def import_data(file_path, window):
     h5_file = h5py.File(file_path, 'r')
     if window.sample_button.isChecked():
-        data = pd.DataFrame(h5_file['srs_hits'].value[100:120])
+        data = pd.DataFrame(h5_file['srs_hits'].value[0:20])
     else:
         data = pd.DataFrame(h5_file['srs_hits'].value)
     return data
@@ -34,9 +34,10 @@ def import_data(file_path, window):
 def cluster_data(df_raw, window, file_nbr, file_nbrs):
     # Inititate parameters
     time_window = float(window.time_window.text())  # [TDC Channels]
-
     # Initate data vectors
     size = df_raw.shape[0]
+    wMraw = np.zeros([size], dtype=int)
+    gMraw = np.zeros([size], dtype=int)
     data_dict = {'wCh': np.zeros([size], dtype=int),
                  'gCh': np.zeros([size], dtype=int),
                  'wM': np.zeros([size], dtype=int),
@@ -80,7 +81,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     ADCs = df_raw['adc'].values[1:].astype(np.int64)
     chip_ids = df_raw['chip_id'].values[1:].astype(np.int64)
     Times = df_raw['srs_timestamp'].values[1:].astype(np.int64)
-
+    clusterStartIndex = 0
     # Iterate through data
     for i, (Ch, ADC, chip_id, Time) in enumerate(zip(Chs, ADCs, chip_ids, Times)):
         mgCh = VMM_ch_to_MG24_ch[chip_id][Ch]
@@ -96,8 +97,11 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
                 gw_ADC_max[xMAX] = ADC
                 data_dict[xCh][index] = mgCh
         else:
+            gMraw[clusterStartIndex:i+1] = data_dict['gM'][index]
+            wMraw[clusterStartIndex:i+1] = data_dict['wM'][index]
             # Increase cluster index and reset temporary variables
             index += 1
+            clusterStartIndex = i+1
             start_time = Time
             # Start new cluster
             gw_ADC_max['wMAX'], gw_ADC_max['gMAX'] = 0, 0
@@ -107,9 +111,6 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
             xCh, xM, xADC, xMAX = chip_id_to_wire_or_grid[chip_id]
             data_dict[xADC][index] += ADC
             data_dict[xM][index] += 1
-            #print(chip_id)
-            #print(chip_id_to_wire_or_grid[chip_id])
-            #print(xCh, xM)
             if ADC > gw_ADC_max[xMAX]:
                 gw_ADC_max[xMAX] = ADC
                 data_dict[xCh][index] = mgCh
@@ -122,8 +123,25 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     df_clustered = pd.DataFrame(data_dict)
     # Append vector to raw dataframe with MG channels
     df_raw = df_raw.join(pd.DataFrame(MG_channels))
-
+    df_raw = df_raw.join(pd.DataFrame({'gM': gMraw}))
+    df_raw = df_raw.join(pd.DataFrame({'wM': wMraw}))
     return df_clustered, df_raw
+
+def raw_ADC_summed(df_raw, window):
+    # Inititate parameters
+    time_window = float(window.time_window.text())  # [TDC Channels]
+    # Initate data vectors
+    size = df_raw.shape[0]
+    events_summed_adc_dict = {'ADC_sum': np.zeros([size], dtype=int)}
+    index = []
+    chip_ids = df_raw['chip_id'].values[0:].astype(np.int64)
+    for i, chip_id in enumerate(chip_ids):
+        if chip_id == 2:
+            index.append(i)
+    #print(index)
+
+    events_summed_adc = df_raw
+    return events_summed_adc
 
 
 # =============================================================================
