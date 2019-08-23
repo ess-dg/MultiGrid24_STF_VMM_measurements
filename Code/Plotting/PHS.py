@@ -351,7 +351,7 @@ def PHS_Individual_plot(window):
             for wCh in np.arange(0, layers*4, 1):
                 print('%s, Wires: %d/%d' % (detector, wCh, layers*4-1))
                 # Get ADC values
-                adcs = clusters[(window.wM_min.value() <= clusters.wM & window.wM_max.value()) & (clusters.chip_id != 2)].adc
+                adcs = clusters[(clusters.wCh == wCh) & (window.wM_min.value() <= clusters.wM) & (clusters.wM <= window.wM_max.value()) & (clusters.gM >= 1) & (clusters.chip_id != 2)].adc
                 #adcs = clusters[clusters.wCh == wCh]['adc']
                 # Plot
                 fig = plt.figure()
@@ -370,7 +370,7 @@ def PHS_Individual_plot(window):
             for gCh in np.arange(0, 12, 1):
                 print('%s, Grids: %d/11' % (detector, gCh))
                 # Get ADC values
-                adcs = clusters[(window.gM_min.value() <= clusters.gM & window.gM_max.value()) & (clusters.chip_id != 2)].adc
+                adcs = clusters[(clusters.gCh == gCh) & (window.gM_min.value() <= clusters.gM) & (clusters.gM <= window.gM_max.value()) & (clusters.wM >= 1) & (clusters.chip_id == 2)].adc
                 #adcs = clusters[clusters.gCh == gCh]['adc']
                 # Plot
                 fig = plt.figure()
@@ -395,7 +395,7 @@ def PHS_Individual_plot(window):
                 # Get ADC values
                 adcs_events = events[events.wCh == wCh]['adc']
                 #adcs_clusters = clusters[clusters.wCh == wCh]['adc']
-                adcs_clusters = clusters[(window.wM_min.value() <= clusters.wM & window.wM_max.value()) & (clusters.chip_id != 2)].adc
+                adcs_clusters = clusters[(clusters.wCh == wCh) & (window.wM_min.value() <= clusters.wM) & (clusters.wM <= window.wM_max.value()) & (clusters.gM >= 1) & (clusters.chip_id != 2)].adc
                 # Plot
                 fig = plt.figure()
                 plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
@@ -418,7 +418,7 @@ def PHS_Individual_plot(window):
                 # Get ADC values
                 adcs_events = events[events.gCh == gCh]['adc']
                 #adcs_clusters = clusters[clusters.gCh == gCh]['adc']
-                adcs_clusters = clusters[(window.gM_min.value() <= clusters.gM & window.gM_max.value()) & (clusters.chip_id != 2)].adc
+                adcs_clusters = clusters[(clusters.gCh == gCh) & (window.gM_min.value() <= clusters.gM) & (clusters.gM <= window.gM_max.value()) & (clusters.wM >= 1) & (clusters.chip_id == 2)].adc
                 # Plot
                 fig = plt.figure()
                 plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
@@ -436,14 +436,13 @@ def PHS_Individual_plot(window):
                 fig.savefig(output_path, bbox_inches='tight')
                 plt.close()
 
-
 def PHS_Individual_Channel_plot(window, channel):
     # Import data
     df_events_16 = window.Events_16_layers
-    df_clusters_16 = window.Clusters_16_layers
+    df_clusters_16 = window.Events_16_layers
     # Intial filter
     events_16 = filter_events(df_events_16, window)
-    clusters_16 = filter_coincident_events(df_clusters_16, window)
+    clusters_16 = filter_events(df_clusters_16, window)
     number_bins = int(window.phsBins.text())
     # Plot
     fig = plt.figure()
@@ -459,21 +458,21 @@ def PHS_Individual_Channel_plot(window, channel):
                 facecolor='lightgrey', ec='black', zorder=5)
     elif window.PHS_clustered.isChecked():
         if window.ind_gCh.isChecked():
-            adcs = clusters_16[clusters_16.gCh == channel]['gADC']
+            adcs = clusters_16[(clusters_16.gCh == channel) & (window.gM_min.value() <= clusters_16.gM) & (clusters_16.gM <= window.gM_max.value()) & (clusters_16.wM >= 1) & (clusters_16.chip_id == 2)].adc
             w_or_g = 'grid'
         elif window.ind_wCh.isChecked():
-            adcs = clusters_16[clusters_16.wCh == channel]['wADC']
+            adcs = clusters_16[(clusters_16.wCh == channel) & (window.wM_min.value() <= clusters_16.wM) & (clusters_16.wM <= window.wM_max.value()) & (clusters_16.gM >= 1) & (clusters_16.chip_id != 2)].adc
             w_or_g = 'wire'
         plt.hist(adcs, bins=number_bins, range=[0, 1050], histtype='stepfilled',
                 facecolor='lightblue', ec='black', zorder=5)
     elif window.PHS_overlay.isChecked():
         if window.ind_gCh.isChecked():
             adcs_events = events_16[events_16.gCh == channel]['adc']
-            adcs_clusters = clusters_16[clusters_16.gCh == channel]['gADC']
+            adcs_clusters = clusters_16[(clusters_16.gCh == channel) & (window.gM_min.value() <= clusters_16.gM) & (clusters_16.gM <= window.gM_max.value()) & (clusters_16.wM >= 1) & (clusters_16.chip_id == 2)].adc
             w_or_g = 'grid'
         elif window.ind_wCh.isChecked():
             adcs_events = events_16[events_16.wCh == channel]['adc']
-            adcs_clusters = clusters_16[clusters_16.wCh == channel]['wADC']
+            adcs_clusters = clusters_16[(clusters_16.wCh == channel) & (window.wM_min.value() <= clusters_16.wM) & (clusters_16.wM <= window.wM_max.value()) & (clusters_16.gM >= 1) & (clusters_16.chip_id != 2)].adc
             w_or_g = 'wire'
         plt.hist(adcs_events, bins=number_bins, range=[0, 1050], histtype='stepfilled',
                  facecolor='lightgrey', ec='black', zorder=5, label='raw')
@@ -489,9 +488,9 @@ def PHS_Individual_Channel_plot(window, channel):
 
 def PHS_cluster_plot(window):
     # Import data
-    df_16 = window.Clusters_16_layers
+    df_16 = window.Events_16_layers
     # Initial filter
-    clusters_16 = filter_coincident_events(df_16, window)
+    clusters_16 = filter_events(df_16, window)
     number_bins = int(window.phsBins.text())
     # Prepare figure
     fig = plt.figure()
@@ -501,23 +500,23 @@ def PHS_cluster_plot(window):
     fig.set_figwidth(10)
     # Plot figure
     plt.subplot(1, 2, 1)
-    adcs_16 = clusters_16['gADC']
+    adcs_16 = clusters_16[(window.gM_min.value() <= clusters_16.gM) & (clusters_16.gM <= window.gM_max.value()) & (clusters_16.wM >= 1) & (clusters_16.chip_id == 2)].adc
     plt.xlabel('Collected charge [ADC channels]')
     plt.ylabel('Counts')
     plt.grid(True, which='major', zorder=0)
     plt.grid(True, which='minor', linestyle='--', zorder=0)
-    plt.yscale('log')
+    #plt.yscale('log')
     plt.hist(adcs_16, bins=number_bins, range=[0, 1050], histtype='stepfilled',
              facecolor='lightblue', ec='black', zorder=5)
     plt.title("PHS grid channels")
 
     plt.subplot(1, 2, 2)
-    adcs_16 = clusters_16['wADC']
+    adcs_16 = clusters_16[(window.wM_min.value() <= clusters_16.wM) & (clusters_16.wM <= window.wM_max.value()) & (clusters_16.gM >= 1) & (clusters_16.chip_id != 2)].adc
     plt.xlabel('Collected charge [ADC channels]')
     plt.ylabel('Counts')
     plt.grid(True, which='major', zorder=0)
     plt.grid(True, which='minor', linestyle='--', zorder=0)
-    plt.yscale('log')
+    #plt.yscale('log')
     plt.hist(adcs_16, bins=number_bins, range=[0, 1050], histtype='stepfilled',
             facecolor='lightblue', ec='black', zorder=5)
     plt.title("PHS wire channels")
@@ -537,9 +536,9 @@ def PHS_1D_overlay_plot(window):
         #plt.yscale('log')
 
         if typeCh == 'gCh':
-            adcs_clusters_16 = clusters_16['gADC']
+            adcs_clusters_16 = clusters_16[(window.gM_min.value() <= clusters_16.gM) & (clusters_16.gM <= window.gM_max.value()) & (clusters_16.wM >= 1) & (clusters_16.chip_id == 2)].adc
         elif typeCh == 'wCh':
-            adcs_clusters_16 = clusters_16['wADC']
+            adcs_clusters_16 = clusters_16[(window.wM_min.value() <= clusters_16.wM) & (clusters_16.wM <= window.wM_max.value()) & (clusters_16.gM >= 1) & (clusters_16.chip_id != 2)].adc
         plt.hist(events_16[events_16[typeCh] >= 0].adc, bins=number_bins,
                  range=[0, 1050], histtype='stepfilled', ec='black',
                  facecolor='lightgrey', zorder=5, label='raw')
@@ -550,10 +549,10 @@ def PHS_1D_overlay_plot(window):
 
     # Import data
     raw_16 = window.Events_16_layers
-    clustered_16 = window.Clusters_16_layers
+    clustered_16 = window.Events_16_layers
     # Apply filters
     events_16 = filter_events(raw_16, window)
-    clusters_16 = filter_coincident_events(clustered_16, window)
+    clusters_16 = filter_events(clustered_16, window)
     number_bins = int(window.phsBins.text())
     typeChs = ['gCh', 'wCh']
     grids_or_wires = {'wCh': 'Wires', 'gCh': 'Grids'}
