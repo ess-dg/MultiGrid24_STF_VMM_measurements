@@ -60,6 +60,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     first_row = df_raw.iloc[0]
     start_time = (int(first_row['srs_timestamp'])
                   + int(first_row['chiptime']))
+    #start_time = (int(first_row['srs_timestamp']))
     ADC = int(first_row['adc'])
     chip_id = int(first_row['chip_id'])
     Ch = int(first_row['channel'])
@@ -83,6 +84,7 @@ def cluster_data(df_raw, window, file_nbr, file_nbrs):
     chip_ids = df_raw['chip_id'].values[1:].astype(np.int64)
     Times = (df_raw['srs_timestamp'].values[1:].astype(np.int64)
              + df_raw['chiptime'].values[1:].astype(np.int64))
+    #Times = (df_raw['srs_timestamp'].values[1:].astype(np.int64))
     clusterStartIndex = 0
     # Iterate through data
     for i, (Ch, ADC, chip_id, Time) in enumerate(zip(Chs, ADCs, chip_ids, Times)):
