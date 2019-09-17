@@ -160,12 +160,16 @@ class MainWindow(QMainWindow):
 
     def rate_action(self):
         if self.data_sets != '':
-            ce = self.Clusters_16_layers
-            ce_red = filter_coincident_events(ce, self)
-            start_time = ce_red.head(1)['Time'].values[0]
-            end_time = ce_red.tail(1)['Time'].values[0]
-            rate = ce_red.shape[0]/((end_time - start_time) * 1e-9)
-            print('Total neutron rate: %f Hz' % rate)
+            ce_16 = self.Clusters_16_layers
+            ce_20 = self.Clusters_20_layers
+            layers_vec = [16, 20]
+            events_vec = [ce_16, ce_20]
+            for layer, events in zip(layers_vec, events_vec):
+                ce_red = filter_coincident_events(events, self)
+                start_time = ce_red.head(1)['Time'].values[0]
+                end_time = ce_red.tail(1)['Time'].values[0]
+                rate = ce_red.shape[0]/((end_time - start_time) * 1e-9)
+                print('Total neutron rate (%s layers): %f Hz' % (layer, rate))
 
     def channel_rate_action(self):
         if self.data_sets != '':

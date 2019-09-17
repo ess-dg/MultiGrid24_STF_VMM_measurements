@@ -1338,7 +1338,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>channel rate</string>
+     <string>Channel rates</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="ind_ch_20">
