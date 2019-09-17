@@ -15,35 +15,32 @@ from Plotting.HelperFunctions import filter_events
 
 
 def timestamp_plot(window):
+    data_sets = window.data_sets.splitlines()[0]
     # Import data
-    #df_20 = window.Events_20_layers
+    df_20 = window.Events_20_layers
     df_16 = window.Events_16_layers
-    # Initial filter
-    #events_20 = filter_events(df_20, window)
-    #events_16 = filter_events(df_16, window)
     # Plot
     fig = plt.figure()
-    plt.suptitle('Timestamp vs event number')
-    """
+    fig.set_figheight(4.5)
+    fig.set_figwidth(9)
+    plt.suptitle('Timestamp vs event number\nData set(s): %s' % data_sets)
     # 20 layers
     plt.subplot(1, 2, 1)
     plt.title('20 layers')
     plt.plot(df_20.srs_timestamp, color='black', zorder=5)
-    plt.title('Timestamp vs event number -- 20 layers')
     plt.xlabel('Event number')
     plt.ylabel('Timestamp [TDC channels]')
     plt.grid(True, which='major', zorder=0)
     plt.grid(True, which='minor', linestyle='--', zorder=0)
-    """
     # for 16 layers
-    plt.subplot(1, 1, 1)
+    plt.subplot(1, 2, 2)
     plt.title('16 layers')
     plt.plot(df_16.srs_timestamp, color='black', zorder=5)
-    plt.title('Timestamp vs event number -- 16 layers')
     plt.xlabel('Event number')
     plt.ylabel('Timestamp [TDC channels]')
     plt.grid(True, which='major', zorder=0)
     plt.grid(True, which='minor', linestyle='--', zorder=0)
+    plt.subplots_adjust(left=0.08, right=0.96, top=0.82, bottom=0.12, wspace=0.32)
     return fig
 
 # =============================================================================
@@ -65,11 +62,8 @@ def chip_channels_plot(window):
 
     # Import data before any clustering or mapping
     clusters_16 = window.data
-    #clusters_16 = window.Events_16_layers
-    #print(clusters_16)
     # Declare parameters
     VMM_order = [2, 3, 4, 5]
-
     # Prepare figure
     fig = plt.figure()
     fig.set_figheight(8)
@@ -89,6 +83,8 @@ def chip_channels_plot(window):
 def channel_rates(window):
     events_16 = window.Events_16_layers
     events_16 = filter_events(events_16, window)
+    events_20 = window.Events_20_layers
+    events_20 = filter_events(events_20, window)
     start_time = events_16.head(1)['srs_timestamp'].values[0]
     end_time = events_16.tail(1)['srs_timestamp'].values[0]
 

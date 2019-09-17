@@ -76,14 +76,14 @@ class MainWindow(QMainWindow):
                 print(clusters)
                 print("length", len(clusters))
                 self.measurement_time += self.get_duration(events)
-                #self.Clusters_20_layers = self.Clusters_20_layers.append(clusters)
+                self.Clusters_20_layers = self.Clusters_20_layers.append(clusters)
                 self.Clusters_16_layers = self.Clusters_16_layers.append(clusters)
-                #self.Events_20_layers = self.Events_20_layers.append(events)
+                self.Events_20_layers = self.Events_20_layers.append(events)
                 self.Events_16_layers = self.Events_16_layers.append(events)
                 self.refresh_window()
-            #self.Clusters_20_layers.reset_index(drop=True, inplace=True)
+            self.Clusters_20_layers.reset_index(drop=True, inplace=True)
             self.Clusters_16_layers.reset_index(drop=True, inplace=True)
-            #self.Events_20_layers.reset_index(drop=True, inplace=True)
+            self.Events_20_layers.reset_index(drop=True, inplace=True)
             self.Events_16_layers.reset_index(drop=True, inplace=True)
             # Assign data set names and refresh window
             file_names = self.get_file_names(file_paths)
@@ -206,6 +206,7 @@ class MainWindow(QMainWindow):
         # Individual channels
         self.toggle_ind_channels()
         self.toggle_PHS_choice()
+        self.toggle_detector_choice()
 
         # Styles and colours:
         self.helpbutton.setStyleSheet("background-color:hsv(0,120,230);border:2px solid hsv(0,120,210)")
@@ -222,6 +223,8 @@ class MainWindow(QMainWindow):
         self.PHS_2D_button.setStyleSheet("background-color:hsv(190,10,220);border:2px solid hsv(190,10,200)")
         self.MG.setStyleSheet("background-color:hsv(190,10,220)")
         self.VMM.setStyleSheet("background-color:hsv(190,10,220)")
+        self.ind_ch_16.setStyleSheet("background-color:hsv(240, 10, 220)")
+        self.ind_ch_20.setStyleSheet("background-color:hsv(240, 10, 220)")
         self.line_6.setStyleSheet("background-color:gray")
         self.line_16.setStyleSheet("background-color:gray")
 
@@ -268,6 +271,12 @@ class MainWindow(QMainWindow):
             lambda checked: checked and (self.PHS_raw.setChecked(False), self.PHS_overlay.setChecked(False)))
         self.PHS_overlay.toggled.connect(
             lambda checked: checked and (self.PHS_raw.setChecked(False), self.PHS_clustered.setChecked(False)))
+
+    def toggle_detector_choice(self):
+        self.ind_ch_16.toggled.connect(
+            lambda checked: checked and self.ind_ch_20.setChecked(False))
+        self.ind_ch_20.toggled.connect(
+            lambda checked: checked and self.ind_ch_16.setChecked(False))
 
 # =============================================================================
 # Start GUI

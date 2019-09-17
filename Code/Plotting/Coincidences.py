@@ -18,16 +18,16 @@ def Coincidences_2D_plot(window):
     # Declare parameters (added with condition if empty array)
     data_sets = window.data_sets.splitlines()[0]
     # Import data
-    #df_20 = window.Clusters_20_layers
+    df_20 = window.Clusters_20_layers
     df_16 = window.Clusters_16_layers
     # Initial filter, keep only coincident events
-    #clusters_20 = filter_coincident_events(df_20, window)
+    clusters_20 = filter_coincident_events(df_20, window)
     clusters_16 = filter_coincident_events(df_16, window)
-    print("clusters 16\n", clusters_16)
     # Plot data
     fig = plt.figure()
+    fig.set_figheight(4.5)
+    fig.set_figwidth(9)
     plt.suptitle('Coincident events (2D)\nData set(s): %s' % data_sets)
-    """
     # for 20 layers
     plt.subplot(1, 2, 1)
     plt.title('20 layers')
@@ -37,10 +37,8 @@ def Coincidences_2D_plot(window):
     plt.xlabel('Wire [Channel number]')
     plt.ylabel('Grid [Channel number]')
     plt.colorbar()
-    """
     # for 16 layers
-    plt.subplot(1, 1, 1)
-    #plt.subplot(1,2,2)
+    plt.subplot(1,2,2)
     plt.title('16 layers')
     plt.hist2d(clusters_16.wCh, clusters_16.gCh, bins=[64, 12],
                range=[[-0.5, 63.5], [-0.5, 11.5]],
@@ -48,6 +46,7 @@ def Coincidences_2D_plot(window):
     plt.xlabel('Wire [Channel number]')
     plt.ylabel('Grid [Channel number]')
     plt.colorbar()
+    plt.subplots_adjust(left=0.08, right=0.96, top=0.82, bottom=0.12, wspace=0.32)
     return fig
 
 
@@ -57,23 +56,19 @@ def Coincidences_2D_plot(window):
 
 def Coincidences_3D_plot(window):
     # Import data
-    #df_20 = window.Clusters_20_layers
+    df_20 = window.Clusters_20_layers
     df_16 = window.Clusters_16_layers
     data_sets = window.data_sets.splitlines()[0]
     # Perform initial filters
-    #clusters_20 = filter_coincident_events(df_20, window)
+    clusters_20 = filter_coincident_events(df_20, window)
     clusters_16 = filter_coincident_events(df_16, window)
     # Declare max and min count
     min_count = 0
     max_count = np.inf
     # Initiate 'voxel_id -> (x, y, z)'-mapping
-    #MG24_ch_to_coord_20, MG24_ch_to_coord_16 = get_MG24_to_XYZ_mapping()
-    MG24_ch_to_coord_16 = get_MG24_to_XYZ_mapping()
+    MG24_ch_to_coord_20, MG24_ch_to_coord_16 = get_MG24_to_XYZ_mapping()
     # Calculate 3D histogram
 
-
-
-    """
     # 20 layers
     H_20, edges_20 = np.histogramdd(clusters_20[['wCh', 'gCh']].values,
                               bins=(80, 13),
@@ -95,15 +90,14 @@ def Coincidences_3D_plot(window):
                 hist_20[3].append(H_20[wCh, gCh])
                 loc_20 += 1
                 labels_20.append('Wire Channel: ' + str(wCh) + '<br>'
-                              + 'Grid Channel: ' + str(gCh) + '<br>'
-                              + 'Counts: ' + str(H_20[wCh, gCh])
-                              )
-    """
+                               + 'Grid Channel: ' + str(gCh) + '<br>'
+                               + 'Counts: ' + str(H_20[wCh, gCh])
+                               )
     # 16 layers
     H_16, edges_16 = np.histogramdd(clusters_16[['wCh', 'gCh']].values,
-                              bins=(80, 12),
-                              range=((0, 80), (0, 12))
-                              )
+                                    bins=(80, 12),
+                                    range=((0, 80), (0, 12))
+                                   )
     # Insert results into an array
     hist_16 = [[], [], [], []]
     loc_16 = 0
@@ -120,27 +114,27 @@ def Coincidences_3D_plot(window):
                 hist_16[3].append(H_16[wCh, gCh])
                 loc_16 += 1
                 labels_16.append('Wire Channel: ' + str(wCh) + '<br>'
-                              + 'Grid Channel: ' + str(gCh) + '<br>'
-                              + 'Counts: ' + str(H_16[wCh, gCh])
-                              )
+                               + 'Grid Channel: ' + str(gCh) + '<br>'
+                               + 'Counts: ' + str(H_16[wCh, gCh])
+                               )
 
     # Produce 3D histogram plot
     labels = []
-    #labels.extend(labels_20)
+    labels.extend(labels_20)
     labels.extend(labels_16)
 
     # Produce 3D histogram plot
     hist = [[], [], [], []]
-    #hist_x_offset = [i + 100 for i in hist_20[0]]
+    hist_x_offset = [i + 100 for i in hist_20[0]]
     hist_z_offset = [i +  40 for i in hist_16[2]]
-    #hist[0].extend(hist_x_offset)
+    hist[0].extend(hist_x_offset)
     hist[0].extend(hist_16[0])
-    #hist[1].extend(hist_20[1])
+    hist[1].extend(hist_20[1])
     hist[1].extend(hist_16[1])
-    #hist[2].extend(hist_20[2])
-    #hist[2].extend(hist_z_offset)
+    hist[2].extend(hist_20[2])
+    hist[2].extend(hist_z_offset)
     hist[2].extend(hist_16[2])
-    #hist[3].extend(hist_20[3])
+    hist[3].extend(hist_20[3])
     hist[3].extend(hist_16[3])
 
     MG_3D_trace = go.Scatter3d(x=hist[0],
@@ -192,7 +186,6 @@ def get_MG24_to_XYZ_mapping():
     LayerSpacing = 23.5
     GridSpacing = 23.5
     # Iterate over all channels and create mapping
-    """
     # 20 layers
     MG24_ch_to_coord_20 = np.empty((13, 80), dtype='object')
     for gCh in np.arange(0, 13, 1):
@@ -201,7 +194,6 @@ def get_MG24_to_XYZ_mapping():
             y = gCh * GridSpacing
             z = (wCh % 20) * WireSpacing
             MG24_ch_to_coord_20[gCh, wCh] = {'x': x, 'y': y, 'z': z}
-    """
     # 16 layers
     MG24_ch_to_coord_16 = np.empty((12, 80), dtype='object')
     for gCh in np.arange(0, 12, 1):
@@ -210,6 +202,4 @@ def get_MG24_to_XYZ_mapping():
             y = gCh * GridSpacing
             z = (wCh % 16) * WireSpacing
             MG24_ch_to_coord_16[gCh, wCh] = {'x': x, 'y': y, 'z': z}
-    #return MG24_ch_to_coord_20, MG24_ch_to_coord_16
-    #print("spatial mapping\n", MG24_ch_to_coord_16)
-    return MG24_ch_to_coord_16
+    return MG24_ch_to_coord_20, MG24_ch_to_coord_16
