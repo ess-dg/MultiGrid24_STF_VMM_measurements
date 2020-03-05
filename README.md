@@ -22,7 +22,7 @@ conda install h5py
 
 Clone the repository:
 ```
-git clone https://github.com/AlexanderBackis/MultiGridVMM.git
+git clone https://github.com/ess-dg/MultiGrid24_STF_VMM_measurements.git
 ```
 
 ## Execution
